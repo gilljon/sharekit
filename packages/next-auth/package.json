@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/next-auth",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "NextAuth.js / Auth.js adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",
@@ -14,7 +14,10 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
