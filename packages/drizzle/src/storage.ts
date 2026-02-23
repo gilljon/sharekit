@@ -1,4 +1,4 @@
-import type { CreateShareInput, Share, ShareableStorage } from "@sharekit/core";
+import type { CreateShareInput, Share, ShareableStorage, VisibleFields } from "@sharekit/core";
 import { and, eq, sql } from "drizzle-orm";
 import { shareableShares } from "./schema.js";
 
@@ -60,10 +60,17 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
       return row ? rowToShare(row) : null;
     },
 
-    async getSharesByOwner(ownerId: string, type?: string): Promise<Share[]> {
+    async getSharesByOwner(
+      ownerId: string,
+      type?: string,
+      filter?: { params?: Record<string, unknown> },
+    ): Promise<Share[]> {
       const conditions = [eq(shareableShares.ownerId, ownerId)];
       if (type) {
         conditions.push(eq(shareableShares.type, type));
+      }
+      if (filter?.params) {
+        conditions.push(sql`${shareableShares.params} @> ${JSON.stringify(filter.params)}::jsonb`);
       }
 
       const rows = (await (db as any)
@@ -86,6 +93,25 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
         .update(shareableShares)
         .set({ viewCount: sql`${shareableShares.viewCount} + 1` })
         .where(eq(shareableShares.token, token));
+    },
+
+    async updateShare(
+      shareId: string,
+      ownerId: string,
+      updates: { visibleFields?: VisibleFields; expiresAt?: Date },
+    ): Promise<Share> {
+      const data: Record<string, unknown> = {};
+      if (updates.visibleFields !== undefined) data.visibleFields = updates.visibleFields;
+      if (updates.expiresAt !== undefined) data.expiresAt = updates.expiresAt;
+
+      const [row] = (await (db as any)
+        .update(shareableShares)
+        .set(data)
+        .where(and(eq(shareableShares.id, shareId), eq(shareableShares.ownerId, ownerId)))
+        .returning()) as (typeof shareableShares.$inferSelect)[];
+
+      if (!row) throw new Error("Share not found or unauthorized");
+      return rowToShare(row);
     },
   };
 }

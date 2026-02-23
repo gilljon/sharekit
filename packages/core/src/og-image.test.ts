@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { renderOGImage } from "./og-image.js";
+import { _resetFontCache, renderOGImage } from "./og-image.js";
 import type { OGImageConfig } from "./types.js";
 
 vi.mock("satori", () => ({
@@ -231,6 +231,7 @@ describe("renderOGImage", () => {
     });
 
     it("uses sans-serif when no fonts available and fetch fails", async () => {
+      _resetFontCache();
       vi.stubGlobal(
         "fetch",
         vi.fn(async () => ({ ok: false })),
