@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { defineShareableComponents } from "@sharekit/react";
+import { createFileRoute } from "@tanstack/react-router";
 import { profileShare } from "../shareables/profile.js";
 import "@sharekit/react/styles.css";
 
@@ -40,7 +40,10 @@ function ProfilePage() {
           <p>Views: {mockData.analytics.viewsOverTime.join(", ")}</p>
         </Profile.Field>
         <Profile.Field name="analytics.earningsBreakdown">
-          <p>Breakdown: subs ${mockData.analytics.earningsBreakdown.subscriptions}, sponsors ${mockData.analytics.earningsBreakdown.sponsors}</p>
+          <p>
+            Breakdown: subs ${mockData.analytics.earningsBreakdown.subscriptions}, sponsors $
+            {mockData.analytics.earningsBreakdown.sponsors}
+          </p>
         </Profile.Field>
       </div>
     </Profile.Provider>

@@ -1,14 +1,17 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { handleAction, ShareableError } from "./handler.js";
+import { describe, expect, it, vi } from "vitest";
+import { ShareableError, handleAction } from "./handler.js";
 import type {
   Share,
   ShareableAction,
-  ShareableInstance,
-  ShareableStorage,
   ShareableAuthProvider,
   ShareableConfig,
   ShareableDefinition,
+  ShareableInstance,
+  ShareableStorage,
 } from "./types.js";
+
+// biome-ignore lint/suspicious/noExplicitAny: test helper -- handleAction returns unknown, tests need property access
+type Result = Record<string, any>;
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -31,7 +34,15 @@ function makeShare(overrides: Partial<Share> = {}): Share {
 
 function makeStorage(overrides: Partial<ShareableStorage> = {}): ShareableStorage {
   return {
-    createShare: vi.fn(async (input) => makeShare({ token: input.token, ownerId: input.ownerId, type: input.type, visibleFields: input.visibleFields, params: input.params })),
+    createShare: vi.fn(async (input) =>
+      makeShare({
+        token: input.token,
+        ownerId: input.ownerId,
+        type: input.type,
+        visibleFields: input.visibleFields,
+        params: input.params,
+      }),
+    ),
     getShare: vi.fn(async () => makeShare()),
     getSharesByOwner: vi.fn(async () => [makeShare()]),
     revokeShare: vi.fn(async () => {}),
@@ -63,12 +74,14 @@ function makeDefinition(overrides: Partial<ShareableDefinition> = {}): Shareable
   };
 }
 
-function makeInstance(overrides: {
-  storage?: ShareableStorage;
-  auth?: ShareableAuthProvider;
-  definitions?: Map<string, ShareableDefinition>;
-  defaults?: ShareableConfig["defaults"];
-} = {}): ShareableInstance {
+function makeInstance(
+  overrides: {
+    storage?: ShareableStorage;
+    auth?: ShareableAuthProvider;
+    definitions?: Map<string, ShareableDefinition>;
+    defaults?: ShareableConfig["defaults"];
+  } = {},
+): ShareableInstance {
   const storage = overrides.storage ?? makeStorage();
   const auth = overrides.auth ?? makeAuth();
   const definitions = overrides.definitions ?? new Map([["profile", makeDefinition()]]);
@@ -108,7 +121,7 @@ describe("handleAction", () => {
         params: {},
       };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.share).toBeDefined();
       expect(result.url).toContain("https://example.com/shared/profile/");
       expect(storage.createShare).toHaveBeenCalledOnce();
@@ -137,7 +150,9 @@ describe("handleAction", () => {
         params: {},
       };
 
-      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({ status: 401 });
+      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({
+        status: 401,
+      });
     });
 
     it("throws 400 for unknown type", async () => {
@@ -149,7 +164,9 @@ describe("handleAction", () => {
         params: {},
       };
 
-      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({ status: 400 });
+      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({
+        status: 400,
+      });
     });
 
     it("resolves field dependencies before storing", async () => {
@@ -164,7 +181,7 @@ describe("handleAction", () => {
 
       await handleAction(instance, action, makeRequest());
 
-      const call = (storage.createShare as any).mock.calls[0][0];
+      const call = vi.mocked(storage.createShare).mock.calls[0][0];
       expect(call.visibleFields.bio).toBe(false);
     });
 
@@ -179,7 +196,7 @@ describe("handleAction", () => {
         params: {},
       };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.url).not.toContain("//shared");
     });
   });
@@ -189,7 +206,7 @@ describe("handleAction", () => {
       const instance = makeInstance();
       const action: ShareableAction = { kind: "list", type: "profile" };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.shares).toHaveLength(1);
     });
 
@@ -215,7 +232,9 @@ describe("handleAction", () => {
       const action: ShareableAction = { kind: "list", type: "profile", params: { chatId: "123" } };
 
       await handleAction(instance, action, makeRequest());
-      expect(storage.getSharesByOwner).toHaveBeenCalledWith("user-1", "profile", { params: { chatId: "123" } });
+      expect(storage.getSharesByOwner).toHaveBeenCalledWith("user-1", "profile", {
+        params: { chatId: "123" },
+      });
     });
   });
 
@@ -224,7 +243,7 @@ describe("handleAction", () => {
       const instance = makeInstance();
       const action: ShareableAction = { kind: "get", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.share.token).toBe("abcdef123456");
     });
 
@@ -260,7 +279,7 @@ describe("handleAction", () => {
       const instance = makeInstance({ storage });
       const action: ShareableAction = { kind: "revoke", shareId: "share-1" };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.success).toBe(true);
       expect(storage.revokeShare).toHaveBeenCalledWith("share-1", "user-1");
     });
@@ -286,9 +305,11 @@ describe("handleAction", () => {
         visibleFields: { name: true, email: true },
       };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.share.visibleFields).toEqual({ name: true, email: true });
-      expect(storage.updateShare).toHaveBeenCalledWith("share-1", "user-1", { visibleFields: { name: true, email: true } });
+      expect(storage.updateShare).toHaveBeenCalledWith("share-1", "user-1", {
+        visibleFields: { name: true, email: true },
+      });
     });
 
     it("throws 401 without auth", async () => {
@@ -302,7 +323,9 @@ describe("handleAction", () => {
       const instance = makeInstance();
       const action: ShareableAction = { kind: "update", shareId: "share-1", visibleFields: {} };
 
-      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({ status: 501 });
+      await expect(handleAction(instance, action, makeRequest())).rejects.toMatchObject({
+        status: 501,
+      });
     });
   });
 
@@ -311,7 +334,7 @@ describe("handleAction", () => {
       const instance = makeInstance();
       const action: ShareableAction = { kind: "view", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.data).toBeDefined();
       expect(result.visibleFields).toBeDefined();
       expect(result.ownerName).toBe("Test");
@@ -342,7 +365,9 @@ describe("handleAction", () => {
         getData: vi.fn(async () => ({ name: "Test", email: "secret@test.com", bio: "Hello" })),
       });
       const storage = makeStorage({
-        getShare: vi.fn(async () => makeShare({ visibleFields: { name: true, email: false, bio: true } })),
+        getShare: vi.fn(async () =>
+          makeShare({ visibleFields: { name: true, email: false, bio: true } }),
+        ),
       });
       const instance = makeInstance({
         storage,
@@ -350,7 +375,7 @@ describe("handleAction", () => {
       });
       const action: ShareableAction = { kind: "view", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.data.email).toBeUndefined();
       expect(result.data.name).toBe("Test");
     });
@@ -364,7 +389,7 @@ describe("handleAction", () => {
       });
       const action: ShareableAction = { kind: "view", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.data.custom).toBe(true);
       expect(definition.filterData).toHaveBeenCalledOnce();
     });
@@ -414,7 +439,7 @@ describe("handleAction", () => {
       const instance = makeInstance({ auth });
       const action: ShareableAction = { kind: "view", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.ownerName).toBe("Someone");
     });
 
@@ -422,7 +447,7 @@ describe("handleAction", () => {
       const instance = makeInstance({ defaults: { ownerDisplay: "full" } });
       const action: ShareableAction = { kind: "view", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.ownerName).toBe("Test User");
     });
   });
@@ -430,7 +455,7 @@ describe("handleAction", () => {
   describe("og", () => {
     it("returns OG image config", async () => {
       const definition = makeDefinition({
-        ogImage: ({ data, ownerName }) => ({
+        ogImage: ({ ownerName }) => ({
           title: `${ownerName}'s Profile`,
           subtitle: "Shared content",
           metrics: [{ label: "Views", value: "100" }],
@@ -441,7 +466,7 @@ describe("handleAction", () => {
       });
       const action: ShareableAction = { kind: "og", token: "abcdef123456" };
 
-      const result = await handleAction(instance, action) as any;
+      const result = (await handleAction(instance, action)) as Result;
       expect(result.title).toContain("Profile");
       expect(result.metrics).toHaveLength(1);
     });
@@ -503,7 +528,7 @@ describe("handleAction", () => {
       const instance = makeInstance({ storage });
       const action: ShareableAction = { kind: "analytics" };
 
-      const result = await handleAction(instance, action, makeRequest()) as any;
+      const result = (await handleAction(instance, action, makeRequest())) as Result;
       expect(result.totalShares).toBe(2);
       expect(result.totalViews).toBe(30);
       expect(result.topShares).toHaveLength(2);

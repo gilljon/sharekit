@@ -1,7 +1,6 @@
+import { TanStackSharedView, createShareServerFns, getShareMeta } from "@sharekit/tanstack-start";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { createShareServerFns, getShareMeta, TanStackSharedView } from "@sharekit/tanstack-start";
-import type { SharedViewData } from "@sharekit/core";
 import { shareable } from "../lib/shareable.js";
 
 const fetchSharedView = createServerFn({ method: "GET" })
@@ -19,9 +18,7 @@ export const Route = createFileRoute("/shared/$type/$token")({
   component: SharedPage,
   loader: async ({ params }) => {
     const shared = await fetchSharedView({ data: { token: params.token } });
-    const meta = shared
-      ? await getShareMeta(shareable, params.type, params.token)
-      : null;
+    const meta = shared ? await getShareMeta(shareable, params.type, params.token) : null;
     return { shared, type: params.type, token: params.token, meta };
   },
   head: ({ loaderData }) => {
@@ -66,7 +63,5 @@ function SharedPage() {
     );
   }
 
-  return (
-    <TanStackSharedView config={shareable} data={shared} token={token} />
-  );
+  return <TanStackSharedView config={shareable} data={shared} token={token} />;
 }

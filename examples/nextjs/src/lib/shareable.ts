@@ -1,8 +1,16 @@
 import { createShareable } from "@sharekit/core";
-import { prismaStorage } from "@sharekit/prisma";
 import { nextAuthProvider } from "@sharekit/next-auth";
+import { prismaStorage } from "@sharekit/prisma";
 
-declare const prisma: { shareableShare: { create: (args: any) => Promise<any>; findUnique: (args: any) => Promise<any>; findMany: (args: any) => Promise<any>; delete: (args: any) => Promise<any>; update: (args: any) => Promise<any> } };
+declare const prisma: {
+  shareableShare: {
+    create: (args: any) => Promise<any>;
+    findUnique: (args: any) => Promise<any>;
+    findMany: (args: any) => Promise<any>;
+    delete: (args: any) => Promise<any>;
+    update: (args: any) => Promise<any>;
+  };
+};
 declare const auth: () => Promise<{ user?: { id?: string; name?: string } } | null>;
 
 export const shareable = createShareable({

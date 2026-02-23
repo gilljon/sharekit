@@ -1,6 +1,4 @@
-/// <reference types="vite/client" />
-import type { ReactNode } from "react";
-import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { HeadContent, Outlet, Scripts, createRootRoute } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -15,7 +13,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   return (
-    <html>
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

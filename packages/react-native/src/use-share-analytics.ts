@@ -14,9 +14,7 @@ export interface UseShareAnalyticsReturn {
   refetch: () => Promise<void>;
 }
 
-export function useShareAnalytics(
-  options: UseShareAnalyticsOptions = {},
-): UseShareAnalyticsReturn {
+export function useShareAnalytics(options: UseShareAnalyticsOptions = {}): UseShareAnalyticsReturn {
   const { type, autoFetch = true } = options;
   const { client } = useShareableContext();
   const [data, setData] = useState<ShareAnalyticsData | null>(null);

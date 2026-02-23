@@ -15,7 +15,7 @@ export const profileShare = shareable.define("profile", {
     },
   },
 
-  getData: async ({ ownerId }) => {
+  getData: async () => {
     return {
       bio: "Trading enthusiast. Building in public.",
       followerCount: 1240,

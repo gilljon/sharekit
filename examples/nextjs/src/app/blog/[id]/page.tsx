@@ -31,7 +31,9 @@ export default function BlogPostPage() {
         <BlogPost.Field name="comments">
           <ul>
             {mockData.comments.map((c) => (
-              <li key={c.id}>{c.author}: {c.text}</li>
+              <li key={c.id}>
+                {c.author}: {c.text}
+              </li>
             ))}
           </ul>
         </BlogPost.Field>

@@ -1,9 +1,9 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderOGImage } from "./og-image.js";
 import type { OGImageConfig } from "./types.js";
 
 vi.mock("satori", () => ({
-  default: vi.fn(async (element: unknown) => "<svg>mock</svg>"),
+  default: vi.fn(async (_element: unknown) => "<svg>mock</svg>"),
 }));
 
 import satori from "satori";
@@ -67,7 +67,8 @@ describe("renderOGImage", () => {
       const element = getSatoriCall();
       const children = getChildren(element);
       const hasSubtitle = children.some(
-        (c: unknown) => (c as { props?: { children?: unknown } })?.props?.children === "Test Subtitle",
+        (c: unknown) =>
+          (c as { props?: { children?: unknown } })?.props?.children === "Test Subtitle",
       );
       expect(hasSubtitle).toBe(false);
     });
@@ -81,7 +82,8 @@ describe("renderOGImage", () => {
       const element = getSatoriCall();
       const children = getChildren(element);
       const hasMetricsRow = children.some(
-        (c: unknown) => (c as { props?: { style?: { marginTop?: string } } })?.props?.style?.marginTop === "auto",
+        (c: unknown) =>
+          (c as { props?: { style?: { marginTop?: string } } })?.props?.style?.marginTop === "auto",
       );
       expect(hasMetricsRow).toBe(false);
     });
@@ -145,7 +147,9 @@ describe("renderOGImage", () => {
         textAlign: "center",
       });
 
-      const titleChild = getChildren(element)[0] as { props?: { children?: unknown; style?: Record<string, unknown> } };
+      const titleChild = getChildren(element)[0] as {
+        props?: { children?: unknown; style?: Record<string, unknown> };
+      };
       expect(titleChild?.props?.children).toBe("Test Title");
       expect(titleChild?.props?.style?.fontSize).toBe("56px");
     });
@@ -156,7 +160,8 @@ describe("renderOGImage", () => {
       const element = getSatoriCall();
       const children = getChildren(element);
       const subtitleChild = children.find(
-        (c: unknown) => (c as { props?: { children?: unknown } })?.props?.children === "Test Subtitle",
+        (c: unknown) =>
+          (c as { props?: { children?: unknown } })?.props?.children === "Test Subtitle",
       );
       expect(subtitleChild).toBeDefined();
     });
@@ -175,7 +180,11 @@ describe("renderOGImage", () => {
 
       expect(customTemplate).toHaveBeenCalledWith(
         baseConfig,
-        expect.objectContaining({ bg: expect.any(String), text: expect.any(String), accent: expect.any(String) }),
+        expect.objectContaining({
+          bg: expect.any(String),
+          text: expect.any(String),
+          accent: expect.any(String),
+        }),
       );
 
       const element = getSatoriCall();
@@ -200,7 +209,10 @@ describe("renderOGImage", () => {
         backgroundImage: "linear-gradient(135deg, #4338ca, #6366f1)",
       });
 
-      const inner = getChildren(element)[0] as { type?: string; props?: { style?: Record<string, unknown> } };
+      const inner = getChildren(element)[0] as {
+        type?: string;
+        props?: { style?: Record<string, unknown> };
+      };
       expect(inner?.type).toBe("div");
       expect(inner?.props?.style?.display).toBe("flex");
     });
@@ -219,7 +231,10 @@ describe("renderOGImage", () => {
     });
 
     it("uses sans-serif when no fonts available and fetch fails", async () => {
-      vi.stubGlobal("fetch", vi.fn(async () => ({ ok: false })));
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async () => ({ ok: false })),
+      );
 
       await renderOGImage(baseConfig, { fonts: [] });
 
@@ -231,12 +246,15 @@ describe("renderOGImage", () => {
 
     it("loads default font when none provided", async () => {
       const fontBuffer = new ArrayBuffer(100);
-      vi.stubGlobal("fetch", vi.fn(async (url: string) => {
-        if (url.includes("inter@latest")) {
-          return { ok: true, arrayBuffer: async () => fontBuffer };
-        }
-        return { ok: false };
-      }));
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(async (url: string) => {
+          if (url.includes("inter@latest")) {
+            return { ok: true, arrayBuffer: async () => fontBuffer };
+          }
+          return { ok: false };
+        }),
+      );
 
       await renderOGImage(baseConfig, {});
 

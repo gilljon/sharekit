@@ -1,5 +1,5 @@
+import { type OGImageOptions, renderOGImage } from "./og-image.js";
 import type { OGImageConfig } from "./types.js";
-import { renderOGImage, type OGImageOptions } from "./og-image.js";
 
 const DEFAULT_WIDTH = 1200;
 

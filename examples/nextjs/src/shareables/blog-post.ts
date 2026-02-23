@@ -15,8 +15,8 @@ export const blogPostShare = shareable.define("blog-post", {
     },
   },
 
-  getData: async ({ ownerId, params }) => {
-    const postId = (params as { postId: string }).postId;
+  getData: async ({ params }) => {
+    const _postId = (params as { postId: string }).postId;
     return {
       content: "This is the blog post content. Share with privacy controls.",
       authorBio: "Writer and developer. Building in public.",
