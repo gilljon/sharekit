@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/next",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Next.js adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",

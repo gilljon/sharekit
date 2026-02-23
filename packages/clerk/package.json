@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/clerk",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Clerk adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",

@@ -1,5 +1,12 @@
 # @sharekit/react-native
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [c0b9deb]
+  - @sharekit/core@1.1.0
+
 ## 0.3.0
 
 ### Minor Changes
