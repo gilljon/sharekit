@@ -1,11 +1,11 @@
-# @shareable/core
+# @sharekit/core
 
 Core engine for the Shareable SDK. Framework-agnostic -- contains the token engine, privacy engine, data filtering, types, and OG image renderer.
 
 ## Installation
 
 ```bash
-pnpm add @shareable/core
+pnpm add @sharekit/core
 ```
 
 ## API
@@ -15,7 +15,7 @@ pnpm add @shareable/core
 Creates a shareable instance. This is the entry point for the SDK.
 
 ```typescript
-import { createShareable } from "@shareable/core";
+import { createShareable } from "@sharekit/core";
 
 const shareable = createShareable({
   storage: yourStorageAdapter,

@@ -1,0 +1,50 @@
+name: Adapter Request
+description: Request support for a new framework, ORM, or auth provider
+labels: [adapter-request]
+body:
+  - type: dropdown
+    id: adapter-type
+    attributes:
+      label: Adapter Type
+      description: What kind of adapter are you requesting?
+      options:
+        - Storage (ORM / Database)
+        - Auth Provider
+        - Framework
+    validations:
+      required: true
+
+  - type: input
+    id: library
+    attributes:
+      label: Library / Framework
+      description: "Name and version (e.g., Convex, Supabase, Lucia Auth, SvelteKit)"
+      placeholder: "e.g., Supabase ^2.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why would this adapter be valuable? How many users does this library have?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Willing to Contribute?
+      description: Would you be willing to help build this adapter?
+      options:
+        - "Yes, I can submit a PR"
+        - "Yes, with some guidance"
+        - "No, just requesting"
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Context
+      description: Any relevant links, docs, or implementation notes.

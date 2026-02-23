@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { FieldSchema, Share, VisibleFields } from "@shareable/core";
+import type { FieldSchema, Share, VisibleFields } from "@sharekit/core";
 
 export interface ShareableContextValue {
   /** True when rendering inside a shared/public view */

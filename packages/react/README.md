@@ -1,11 +1,11 @@
-# @shareable/react
+# @sharekit/react
 
 React components and hooks for the Shareable SDK.
 
 ## Installation
 
 ```bash
-pnpm add @shareable/react @shareable/core
+pnpm add @sharekit/react @sharekit/core
 ```
 
 ## Components

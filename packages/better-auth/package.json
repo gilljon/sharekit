@@ -1,5 +1,5 @@
 {
-  "name": "@shareable/better-auth",
+  "name": "@sharekit/better-auth",
   "version": "0.1.0",
   "description": "Better Auth adapter for the Shareable SDK",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@shareable/core": "workspace:*"
+    "@sharekit/core": "workspace:*"
   },
   "devDependencies": {
     "better-auth": "^1.2.0",

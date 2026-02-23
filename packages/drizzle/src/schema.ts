@@ -8,7 +8,7 @@ import { integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-c
  *
  * ```ts
  * // db/schema.ts
- * export { shareableShares } from '@shareable/drizzle'
+ * export { shareableShares } from '@sharekit/drizzle'
  * ```
  */
 export const shareableShares = pgTable("shareable_shares", {

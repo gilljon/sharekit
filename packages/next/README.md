@@ -1,11 +1,11 @@
-# @shareable/next
+# @sharekit/next
 
 Next.js App Router adapter for the Shareable SDK.
 
 ## Installation
 
 ```bash
-pnpm add @shareable/next @shareable/core @shareable/react
+pnpm add @sharekit/next @sharekit/core @sharekit/react
 ```
 
 ## API
@@ -16,7 +16,7 @@ Creates Next.js route handlers for the shareable API. Mount as a catch-all route
 
 ```typescript
 // app/api/shareable/[...shareable]/route.ts
-import { createNextHandler } from "@shareable/next";
+import { createNextHandler } from "@sharekit/next";
 import { shareable } from "../../../../lib/shareable";
 
 export const { GET, POST, DELETE } = createNextHandler(shareable);
@@ -28,7 +28,7 @@ Async server component that fetches and renders shared content:
 
 ```tsx
 // app/shared/[type]/[token]/page.tsx
-import { SharedView } from "@shareable/next";
+import { SharedView } from "@sharekit/next";
 
 export default function SharedPage({ params }) {
   return <SharedView config={shareable} type={params.type} token={params.token} />;

@@ -19,8 +19,8 @@ export interface FlatField {
 /**
  * Flatten a nested FieldSchema into a list of fields with dot-paths.
  *
- * `{ charts: { type: "group", children: { equityCurve: ... } } }`
- * becomes `[{ path: "charts.equityCurve", group: "charts", ... }]`
+ * `{ analytics: { type: "group", children: { viewsOverTime: ... } } }`
+ * becomes `[{ path: "analytics.viewsOverTime", group: "analytics", ... }]`
  */
 export function flattenSchema(schema: FieldSchema): FlatField[] {
   const result: FlatField[] = [];
@@ -95,7 +95,7 @@ export function resolveDependencies(visibleFields: VisibleFields, schema: FieldS
 
 /**
  * Given a VisibleFields map, return the list of dependency warnings.
- * E.g. "Enable 'P&L Amounts' to include 'Equity Curve'"
+ * E.g. "Enable 'Earnings' to include 'Earnings Breakdown'"
  */
 export function getDependencyWarnings(
   visibleFields: VisibleFields,
@@ -126,8 +126,8 @@ export function getDependencyWarnings(
 /**
  * Filter a data object by removing top-level keys that map to hidden fields.
  *
- * For dot-path fields like `charts.equityCurve`, the key `equityCurve` is
- * removed from the nested `charts` object.
+ * For dot-path fields like `analytics.viewsOverTime`, the key `viewsOverTime`
+ * is removed from the nested `analytics` object.
  */
 export function filterData<T>(data: T, visibleFields: VisibleFields): T {
   if (data === null || data === undefined || typeof data !== "object") {

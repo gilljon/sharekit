@@ -3,8 +3,8 @@ import {
   ShareableError,
   type ShareableInstance,
   type SharedViewData,
-} from "@shareable/core";
-import { ShareableProvider } from "@shareable/react";
+} from "@sharekit/core";
+import { ShareableProvider } from "@sharekit/react";
 import type { ReactNode } from "react";
 
 export interface SharedViewProps {

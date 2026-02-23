@@ -1,5 +1,5 @@
 {
-  "name": "@shareable/drizzle",
+  "name": "@sharekit/drizzle",
   "version": "0.1.0",
   "description": "Drizzle ORM storage adapter for the Shareable SDK",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@shareable/core": "workspace:*"
+    "@sharekit/core": "workspace:*"
   },
   "devDependencies": {
     "drizzle-orm": "^0.38.0",

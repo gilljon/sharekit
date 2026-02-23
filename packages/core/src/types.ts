@@ -18,7 +18,7 @@ export interface FieldGroupDefinition {
 
 export type FieldSchema = Record<string, FieldDefinition | FieldGroupDefinition>;
 
-/** Flat visibility map produced by the privacy engine: `{ "pnl": true, "charts.equityCurve": false }` */
+/** Flat visibility map produced by the privacy engine: `{ "bio": true, "analytics.viewsOverTime": false }` */
 export type VisibleFields = Record<string, boolean>;
 
 // ---------------------------------------------------------------------------
@@ -46,12 +46,22 @@ export interface CreateShareInput {
   expiresAt?: Date | null;
 }
 
+export interface ShareAnalyticsData {
+  totalShares: number;
+  totalViews: number;
+  sharesByType: Array<{ type: string; count: number; views: number }>;
+  topShares: Array<Share & { rank: number }>;
+  recentActivity: Array<Share>;
+}
+
 export interface ShareableStorage {
   createShare(input: CreateShareInput): Promise<Share>;
   getShare(token: string): Promise<Share | null>;
   getSharesByOwner(ownerId: string, type?: string): Promise<Share[]>;
   revokeShare(shareId: string, ownerId: string): Promise<void>;
   incrementViewCount(token: string): Promise<void>;
+  /** Optional: return aggregate analytics. If not implemented, a default is derived from getSharesByOwner. */
+  getAnalytics?(ownerId: string, type?: string): Promise<ShareAnalyticsData>;
 }
 
 // ---------------------------------------------------------------------------
@@ -151,7 +161,8 @@ export type ShareableAction =
   | { kind: "get"; token: string }
   | { kind: "revoke"; shareId: string }
   | { kind: "view"; token: string }
-  | { kind: "og"; token: string };
+  | { kind: "og"; token: string }
+  | { kind: "analytics"; type?: string };
 
 export interface SharedViewData<TData = unknown> {
   data: TData;

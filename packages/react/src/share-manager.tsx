@@ -1,4 +1,4 @@
-import { getDefaults, type Share, type VisibleFields } from "@shareable/core";
+import { getDefaults, type Share, type VisibleFields } from "@sharekit/core";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { useShareableContext } from "./context.js";
 import { ShareManagerContext, type ShareManagerContextValue } from "./context.js";

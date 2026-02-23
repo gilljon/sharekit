@@ -1,5 +1,5 @@
 {
-  "name": "@shareable/next",
+  "name": "@sharekit/next",
   "version": "0.1.0",
   "description": "Next.js adapter for the Shareable SDK",
   "license": "MIT",
@@ -22,8 +22,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@shareable/core": "workspace:*",
-    "@shareable/react": "workspace:*"
+    "@sharekit/core": "workspace:*",
+    "@sharekit/react": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

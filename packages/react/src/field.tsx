@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useShareableContext } from "./context.js";
 
 export interface FieldProps {
-  /** Dot-path field name matching the privacy schema (e.g. "pnl", "charts.equityCurve") */
+  /** Dot-path field name matching the privacy schema (e.g. "bio", "analytics.viewsOverTime") */
   name: string;
   /** Content to render when this field is hidden in shared view (default: nothing) */
   fallback?: ReactNode;

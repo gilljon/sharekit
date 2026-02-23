@@ -1,4 +1,4 @@
-import type { CreateShareInput, Share, ShareableStorage } from "@shareable/core";
+import type { CreateShareInput, Share, ShareableStorage } from "@sharekit/core";
 import { and, eq, sql } from "drizzle-orm";
 import { shareableShares } from "./schema.js";
 
@@ -27,7 +27,7 @@ function rowToShare(row: typeof shareableShares.$inferSelect): Share {
  * Creates a ShareableStorage backed by Drizzle ORM.
  *
  * ```ts
- * import { drizzleStorage } from '@shareable/drizzle'
+ * import { drizzleStorage } from '@sharekit/drizzle'
  * const storage = drizzleStorage(db)
  * ```
  */

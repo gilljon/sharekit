@@ -33,9 +33,18 @@ export type {
   ShareableConfig,
   ShareableInstance,
   ShareableAction,
+  ShareAnalyticsData,
   SharedViewData,
 } from "./types.js";
 
 export type { FlatField, ToggleItem } from "./privacy.js";
 
-export { renderOGImage, type OGImageOptions } from "./og-image.js";
+export {
+  renderOGImage,
+  renderOGImagePng,
+  loadGoogleFont,
+  type OGImageOptions,
+  type OGFont,
+  type OGBranding,
+  type OGLayout,
+} from "./og-image.js";

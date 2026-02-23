@@ -1,4 +1,4 @@
-import type { FieldSchema, ShareableDefinition, VisibleFields } from "@shareable/core";
+import type { FieldSchema, ShareableDefinition, VisibleFields } from "@sharekit/core";
 import type { ReactNode } from "react";
 import { Field, type FieldProps } from "./field.js";
 import { ShareableProvider } from "./provider.js";
@@ -10,12 +10,12 @@ import { ShareManager, type ShareManagerProps } from "./share-manager.js";
  *
  * Usage:
  * ```tsx
- * const progressShare = defineShareableComponents(progressDefinition)
+ * const Profile = defineShareableComponents(profileDefinition)
  *
- * <progressShare.Provider data={data}>
- *   <progressShare.Field name="winRate">...</progressShare.Field>
- *   <progressShare.ShareButton />
- * </progressShare.Provider>
+ * <Profile.Provider data={data}>
+ *   <Profile.Field name="bio">...</Profile.Field>
+ *   <Profile.ShareButton />
+ * </Profile.Provider>
  * ```
  */
 export function defineShareableComponents<TData = unknown>(

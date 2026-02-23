@@ -1,5 +1,5 @@
 {
-  "name": "@shareable/core",
+  "name": "@sharekit/core",
   "version": "0.1.0",
   "description": "Core engine for the Shareable SDK -- token management, privacy engine, types",
   "license": "MIT",
@@ -30,10 +30,14 @@
     "typescript": "^5.7.0"
   },
   "peerDependencies": {
-    "zod": "^3.22.0"
+    "zod": "^3.22.0",
+    "@resvg/resvg-js": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "zod": {
+      "optional": true
+    },
+    "@resvg/resvg-js": {
       "optional": true
     }
   },

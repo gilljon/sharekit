@@ -5,7 +5,7 @@ import {
   type ShareableAction,
   type ShareableInstance,
   type OGImageConfig,
-} from "@shareable/core";
+} from "@sharekit/core";
 
 function jsonResponse(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -44,6 +44,9 @@ function parseRoute(
     if (action === "list") {
       return { kind: "list", type };
     }
+    if (action === "analytics") {
+      return { kind: "analytics", type };
+    }
 
     const token = segments[1];
     if (token && segments[2] === "og") {
@@ -81,7 +84,7 @@ function parseRoute(
  * Mount at: `app/api/shareable/[...shareable]/route.ts`
  *
  * ```ts
- * import { createNextHandler } from '@shareable/next'
+ * import { createNextHandler } from '@sharekit/next'
  * import { shareable } from '../../../../lib/shareable'
  * export const { GET, POST, DELETE } = createNextHandler(shareable)
  * ```

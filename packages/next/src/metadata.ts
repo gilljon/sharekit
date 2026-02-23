@@ -3,7 +3,7 @@ import {
   ShareableError,
   type ShareableInstance,
   type OGImageConfig,
-} from "@shareable/core";
+} from "@sharekit/core";
 
 /**
  * Generate Next.js metadata for a shared page, including OG image tags.

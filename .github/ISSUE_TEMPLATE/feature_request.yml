@@ -1,0 +1,44 @@
+name: Feature Request
+description: Suggest a new feature or enhancement
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package would this feature belong to?
+      options:
+        - "@sharekit/core"
+        - "@sharekit/react"
+        - "@sharekit/next"
+        - "@sharekit/tanstack-start"
+        - "@sharekit/remix"
+        - "@sharekit/drizzle"
+        - "@sharekit/prisma"
+        - "@sharekit/better-auth"
+        - "@sharekit/next-auth"
+        - "@sharekit/clerk"
+        - New package
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe the problem or use case that this feature would address.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-api
+    attributes:
+      label: Proposed API
+      description: If you have ideas about what the API would look like, describe it here. Code snippets are welcome.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternatives or workarounds have you considered?

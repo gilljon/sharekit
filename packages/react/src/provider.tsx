@@ -1,4 +1,4 @@
-import type { FieldSchema, VisibleFields } from "@shareable/core";
+import type { FieldSchema, VisibleFields } from "@sharekit/core";
 import type { ReactNode } from "react";
 import { ShareableContext, type ShareableContextValue } from "./context.js";
 

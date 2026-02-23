@@ -1,0 +1,81 @@
+name: Bug Report
+description: Report a bug in @sharekit
+labels: [bug]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is affected?
+      options:
+        - "@sharekit/core"
+        - "@sharekit/react"
+        - "@sharekit/next"
+        - "@sharekit/tanstack-start"
+        - "@sharekit/remix"
+        - "@sharekit/drizzle"
+        - "@sharekit/prisma"
+        - "@sharekit/better-auth"
+        - "@sharekit/next-auth"
+        - "@sharekit/clerk"
+        - Other / Multiple
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of the package are you using?
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Minimal steps to reproduce the behavior.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: input
+    id: framework
+    attributes:
+      label: Framework
+      description: "Which framework are you using? (e.g., Next.js 15, TanStack Start 1.x, Remix 2.x)"
+      placeholder: "Next.js 15"
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      placeholder: "22.x"

@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "description": "Privacy-aware content sharing SDK for React",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilljon/sharekit.git"
+  },
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",

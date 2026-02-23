@@ -1,17 +1,17 @@
-# @shareable/better-auth
+# @sharekit/better-auth
 
 Better Auth adapter for the Shareable SDK.
 
 ## Installation
 
 ```bash
-pnpm add @shareable/better-auth @shareable/core better-auth
+pnpm add @sharekit/better-auth @sharekit/core better-auth
 ```
 
 ## Usage
 
 ```typescript
-import { betterAuthProvider } from "@shareable/better-auth";
+import { betterAuthProvider } from "@sharekit/better-auth";
 import { auth } from "./auth";
 
 const shareable = createShareable({

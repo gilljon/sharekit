@@ -1,5 +1,5 @@
 {
-  "name": "@shareable/react",
+  "name": "@sharekit/react",
   "version": "0.1.0",
   "description": "React components and hooks for the Shareable SDK",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@shareable/core": "workspace:*"
+    "@sharekit/core": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

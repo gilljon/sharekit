@@ -1,11 +1,11 @@
-# @shareable/drizzle
+# @sharekit/drizzle
 
 Drizzle ORM storage adapter for the Shareable SDK.
 
 ## Installation
 
 ```bash
-pnpm add @shareable/drizzle @shareable/core drizzle-orm
+pnpm add @sharekit/drizzle @sharekit/core drizzle-orm
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ pnpm add @shareable/drizzle @shareable/core drizzle-orm
 
 ```typescript
 // db/schema.ts
-export { shareableShares } from "@shareable/drizzle";
+export { shareableShares } from "@sharekit/drizzle";
 ```
 
 ### 2. Generate the migration
@@ -26,7 +26,7 @@ npx drizzle-kit generate
 ### 3. Create the storage adapter
 
 ```typescript
-import { drizzleStorage } from "@shareable/drizzle";
+import { drizzleStorage } from "@sharekit/drizzle";
 import { db } from "./db";
 
 const storage = drizzleStorage(db);
@@ -35,7 +35,7 @@ const storage = drizzleStorage(db);
 ### 4. Pass to createShareable
 
 ```typescript
-import { createShareable } from "@shareable/core";
+import { createShareable } from "@sharekit/core";
 
 const shareable = createShareable({
   storage: drizzleStorage(db),

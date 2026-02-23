@@ -3,7 +3,7 @@ import {
   getToggleConfig,
   type Share,
   type ToggleItem,
-} from "@shareable/core";
+} from "@sharekit/core";
 import { useCallback, useState } from "react";
 import { useShareableContext } from "./context.js";
 import { useShareManager } from "./context.js";

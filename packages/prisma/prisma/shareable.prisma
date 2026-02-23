@@ -1,0 +1,17 @@
+// Add this model to your Prisma schema, then run `npx prisma migrate dev`
+//
+// Copy-paste into your existing schema.prisma file:
+
+model ShareableShare {
+  id            String    @id @default(uuid())
+  type          String
+  token         String    @unique
+  ownerId       String    @map("owner_id")
+  params        Json      @default("{}")
+  visibleFields Json      @default("{}") @map("visible_fields")
+  viewCount     Int       @default(0) @map("view_count")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  expiresAt     DateTime? @map("expires_at")
+
+  @@map("shareable_shares")
+}

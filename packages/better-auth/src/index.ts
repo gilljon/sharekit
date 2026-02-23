@@ -1,4 +1,4 @@
-import type { ShareableAuthProvider, ShareableUser } from "@shareable/core";
+import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
 
 interface BetterAuthInstance {
   api: {
@@ -12,7 +12,7 @@ interface BetterAuthInstance {
  * Creates a ShareableAuthProvider backed by Better Auth.
  *
  * ```ts
- * import { betterAuthProvider } from '@shareable/better-auth'
+ * import { betterAuthProvider } from '@sharekit/better-auth'
  * import { auth } from './auth'
  *
  * const authAdapter = betterAuthProvider(auth)

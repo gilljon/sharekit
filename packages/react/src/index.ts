@@ -12,3 +12,10 @@ export {
   type ShareableContextValue,
   type ShareManagerContextValue,
 } from "./context.js";
+export {
+  ShareAnalytics,
+  useShareAnalytics,
+  type ShareAnalyticsProps,
+  type UseShareAnalyticsOptions,
+  type UseShareAnalyticsReturn,
+} from "./analytics.js";

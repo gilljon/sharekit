@@ -1,0 +1,42 @@
+{
+  "name": "@sharekit/tanstack-start",
+  "version": "0.1.0",
+  "description": "TanStack Start adapter for the Shareable SDK",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sharekit/core": "workspace:*",
+    "@sharekit/react": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "@tanstack/react-router": "^1.0.0",
+    "@tanstack/start": "^1.0.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-router": { "optional": true },
+    "@tanstack/start": { "optional": true }
+  }
+}

@@ -2,6 +2,8 @@ import { formatOwnerName } from "./owner.js";
 import { filterData, resolveDependencies } from "./privacy.js";
 import { generateToken, validateToken } from "./token.js";
 import type {
+  Share,
+  ShareAnalyticsData,
   ShareableAction,
   ShareableInstance,
   SharedViewData,
@@ -171,7 +173,65 @@ export async function handleAction(
 
       return ogConfig;
     }
+
+    case "analytics": {
+      if (!request) throw new ShareableError("Authentication required", 401);
+      const user = await config.auth.getUser(request);
+      if (!user) throw new ShareableError("Authentication required", 401);
+
+      if (config.storage.getAnalytics) {
+        return config.storage.getAnalytics(user.id, action.type);
+      }
+
+      return deriveAnalytics(config, user.id, action.type);
+    }
   }
+}
+
+/**
+ * Default analytics derivation when the storage adapter doesn't implement getAnalytics.
+ * Queries all shares and aggregates in-memory.
+ */
+async function deriveAnalytics(
+  config: { storage: { getSharesByOwner(ownerId: string, type?: string): Promise<Share[]> } },
+  ownerId: string,
+  type?: string,
+): Promise<ShareAnalyticsData> {
+  const shares = await config.storage.getSharesByOwner(ownerId, type);
+
+  const typeMap = new Map<string, { count: number; views: number }>();
+  let totalViews = 0;
+
+  for (const share of shares) {
+    totalViews += share.viewCount;
+    const entry = typeMap.get(share.type) ?? { count: 0, views: 0 };
+    entry.count++;
+    entry.views += share.viewCount;
+    typeMap.set(share.type, entry);
+  }
+
+  const sharesByType = Array.from(typeMap.entries()).map(([t, data]) => ({
+    type: t,
+    count: data.count,
+    views: data.views,
+  }));
+
+  const topShares = [...shares]
+    .sort((a, b) => b.viewCount - a.viewCount)
+    .slice(0, 10)
+    .map((s, i) => ({ ...s, rank: i + 1 }));
+
+  const recentActivity = [...shares]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 10);
+
+  return {
+    totalShares: shares.length,
+    totalViews,
+    sharesByType,
+    topShares,
+    recentActivity,
+  };
 }
 
 // ---------------------------------------------------------------------------
