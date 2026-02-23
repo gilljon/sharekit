@@ -1,0 +1,18 @@
+---
+"@sharekit/core": minor
+"@sharekit/react": minor
+"@sharekit/next": minor
+"@sharekit/tanstack-start": minor
+"@sharekit/remix": minor
+"@sharekit/drizzle": minor
+"@sharekit/prisma": minor
+"@sharekit/better-auth": minor
+"@sharekit/next-auth": minor
+"@sharekit/clerk": minor
+---
+
+Initial release of the ShareKit SDK.
+
+Privacy-aware content sharing for React with token management, granular privacy controls, server-side data filtering, OG image generation, and share analytics.
+
+Includes framework adapters (Next.js, TanStack Start, Remix), storage adapters (Drizzle, Prisma), and auth adapters (Better Auth, NextAuth, Clerk).
