@@ -1,5 +1,12 @@
 # @sharekit/clerk
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [64228a1]
+  - @sharekit/core@1.0.0
+
 ## 0.2.1
 
 ### Patch Changes
