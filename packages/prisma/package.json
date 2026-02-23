@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/prisma",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Prisma ORM storage adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",
@@ -14,7 +14,11 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist", "prisma", "README.md"],
+  "files": [
+    "dist",
+    "prisma",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

@@ -1,5 +1,11 @@
 # @sharekit/core
 
+## 0.3.0
+
+### Minor Changes
+
+- a836ec9: Add composable share primitives: standalone `useToggleFields` and `useShareCrud` hooks, headless render-prop components (`ToggleList`, `ShareList`, `DependencyWarnings`), optional `description` field on `FieldDefinition`, and fix `ShareManager.setFieldVisible` to automatically resolve dependencies.
+
 ## 0.2.0
 
 ### Minor Changes
