@@ -401,29 +401,6 @@ export async function renderOGImage(
   return satori(element as any, { width, height, fonts });
 }
 
-/**
- * Renders an OG image config to a PNG buffer.
- *
- * Requires `@resvg/resvg-js` as a peer dependency.
- * Falls back to SVG string if resvg is not available.
- */
-export async function renderOGImagePng(
-  config: OGImageConfig,
-  options: OGImageOptions = {},
-): Promise<Uint8Array> {
-  const svg = await renderOGImage(config, options);
-
-  const { Resvg } = await import("@resvg/resvg-js");
-  const resvg = new Resvg(svg, {
-    fitTo: {
-      mode: "width",
-      value: options.width ?? DEFAULT_WIDTH,
-    },
-  });
-  const rendered = resvg.render();
-  return rendered.asPng();
-}
-
 // ---------------------------------------------------------------------------
 // Font helpers
 // ---------------------------------------------------------------------------

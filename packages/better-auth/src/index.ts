@@ -1,4 +1,5 @@
 import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
+import { checkOwnerIdHeader } from "@sharekit/core";
 
 interface BetterAuthInstance {
   api: {
@@ -21,10 +22,8 @@ interface BetterAuthInstance {
 export function betterAuthProvider(auth: BetterAuthInstance): ShareableAuthProvider {
   return {
     async getUser(request: Request): Promise<ShareableUser | null> {
-      const ownerIdHeader = request.headers.get("x-shareable-owner-id");
-      if (ownerIdHeader) {
-        return { id: ownerIdHeader };
-      }
+      const headerUser = checkOwnerIdHeader(request);
+      if (headerUser) return headerUser;
 
       try {
         const session = await auth.api.getSession({

@@ -1,4 +1,5 @@
 import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
+import { checkOwnerIdHeader } from "@sharekit/core";
 
 type ClerkAuthFn = () => Promise<{ userId: string | null }>;
 
@@ -34,10 +35,8 @@ interface ClerkProviderOptions {
 export function clerkProvider(options: ClerkProviderOptions): ShareableAuthProvider {
   return {
     async getUser(request: Request): Promise<ShareableUser | null> {
-      const ownerIdHeader = request.headers.get("x-shareable-owner-id");
-      if (ownerIdHeader) {
-        return { id: ownerIdHeader };
-      }
+      const headerUser = checkOwnerIdHeader(request);
+      if (headerUser) return headerUser;
 
       try {
         const { userId } = await options.auth();

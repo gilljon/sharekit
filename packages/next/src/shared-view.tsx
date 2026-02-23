@@ -4,7 +4,13 @@ import {
   type SharedViewData,
   handleAction,
 } from "@sharekit/core";
-import { ShareableProvider } from "@sharekit/react";
+import {
+  DefaultError,
+  DefaultExpired,
+  DefaultNotFound,
+  DefaultSharedView,
+  ShareableProvider,
+} from "@sharekit/react";
 import type { ReactNode } from "react";
 
 export interface SharedViewProps {
@@ -57,23 +63,6 @@ export async function SharedView({
     return <>{fallback ?? <DefaultError />}</>;
   }
 
-  if (children) {
-    return (
-      <ShareableProvider
-        type={type}
-        schema={config.getDefinition(type)?.fields ?? {}}
-        data={viewData.data}
-        isShared
-        visibleFields={viewData.visibleFields}
-        ownerName={viewData.ownerName}
-        viewCount={viewData.viewCount}
-        shareToken={token}
-      >
-        {children(viewData)}
-      </ShareableProvider>
-    );
-  }
-
   return (
     <ShareableProvider
       type={type}
@@ -85,48 +74,7 @@ export async function SharedView({
       viewCount={viewData.viewCount}
       shareToken={token}
     >
-      <DefaultSharedView data={viewData} />
+      {children ? children(viewData) : <DefaultSharedView data={viewData} />}
     </ShareableProvider>
-  );
-}
-
-function DefaultSharedView({ data }: { data: SharedViewData }) {
-  return (
-    <div data-shareable-shared-view="">
-      <header data-shareable-shared-header="">
-        <p>Shared by {data.ownerName}</p>
-        <p>
-          {data.viewCount} view{data.viewCount !== 1 ? "s" : ""}
-        </p>
-      </header>
-      <pre>{JSON.stringify(data.data, null, 2)}</pre>
-    </div>
-  );
-}
-
-function DefaultNotFound() {
-  return (
-    <div data-shareable-not-found="">
-      <h1>Share not found</h1>
-      <p>This share link may have been revoked or does not exist.</p>
-    </div>
-  );
-}
-
-function DefaultExpired() {
-  return (
-    <div data-shareable-expired="">
-      <h1>Share expired</h1>
-      <p>This share link has expired.</p>
-    </div>
-  );
-}
-
-function DefaultError() {
-  return (
-    <div data-shareable-error="">
-      <h1>Something went wrong</h1>
-      <p>Unable to load this shared content.</p>
-    </div>
   );
 }

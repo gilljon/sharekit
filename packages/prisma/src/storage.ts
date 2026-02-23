@@ -1,16 +1,13 @@
-import type { CreateShareInput, Share, ShareableStorage, VisibleFields } from "@sharekit/core";
+import type {
+  CreateShareInput,
+  Share,
+  ShareRow,
+  ShareableStorage,
+  VisibleFields,
+} from "@sharekit/core";
+import { mapRowToShare } from "@sharekit/core";
 
-interface PrismaShareableShare {
-  id: string;
-  type: string;
-  token: string;
-  ownerId: string;
-  params: unknown;
-  visibleFields: unknown;
-  viewCount: number;
-  createdAt: Date;
-  expiresAt: Date | null;
-}
+type PrismaShareableShare = ShareRow;
 
 interface PrismaDelegate {
   create(args: { data: Record<string, unknown> }): Promise<PrismaShareableShare>;
@@ -28,20 +25,6 @@ interface PrismaDelegate {
 
 interface PrismaClient {
   shareableShare: PrismaDelegate;
-}
-
-function rowToShare(row: PrismaShareableShare): Share {
-  return {
-    id: row.id,
-    type: row.type,
-    token: row.token,
-    ownerId: row.ownerId,
-    params: (row.params as Record<string, unknown>) ?? {},
-    visibleFields: (row.visibleFields as Record<string, boolean>) ?? {},
-    viewCount: row.viewCount,
-    createdAt: row.createdAt,
-    expiresAt: row.expiresAt,
-  };
 }
 
 /**
@@ -68,14 +51,14 @@ export function prismaStorage(prisma: PrismaClient): ShareableStorage {
           expiresAt: input.expiresAt ?? null,
         },
       });
-      return rowToShare(row);
+      return mapRowToShare(row);
     },
 
     async getShare(token: string): Promise<Share | null> {
       const row = await prisma.shareableShare.findUnique({
         where: { token },
       });
-      return row ? rowToShare(row) : null;
+      return row ? mapRowToShare(row) : null;
     },
 
     async getSharesByOwner(
@@ -93,7 +76,7 @@ export function prismaStorage(prisma: PrismaClient): ShareableStorage {
         where,
         orderBy: { createdAt: "asc" },
       });
-      return rows.map(rowToShare);
+      return rows.map(mapRowToShare);
     },
 
     async revokeShare(shareId: string, ownerId: string): Promise<void> {
@@ -122,7 +105,7 @@ export function prismaStorage(prisma: PrismaClient): ShareableStorage {
         where: { id: shareId, ownerId },
         data,
       });
-      return rowToShare(row as PrismaShareableShare);
+      return mapRowToShare(row as PrismaShareableShare);
     },
   };
 }
