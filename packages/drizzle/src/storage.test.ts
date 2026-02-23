@@ -194,12 +194,19 @@ describe("drizzleStorage", () => {
   });
 
   describe("updateShare", () => {
+    function getUpdateShare(s: ReturnType<typeof drizzleStorage>) {
+      const fn = s.updateShare;
+      if (!fn) throw new Error("updateShare not implemented");
+      return fn;
+    }
+
     it("updates visibleFields and returns Share", async () => {
       const updatedRow = makeRow({ visibleFields: { name: true, email: true } });
       db.update = vi.fn().mockReturnValue(createUpdateChain([updatedRow]));
 
       const storage = drizzleStorage(db as never);
-      const result = await storage.updateShare("share-id-1", "user-1", {
+      const updateShare = getUpdateShare(storage);
+      const result = await updateShare("share-id-1", "user-1", {
         visibleFields: { name: true, email: true },
       });
 
@@ -213,7 +220,8 @@ describe("drizzleStorage", () => {
       db.update = vi.fn().mockReturnValue(createUpdateChain([updatedRow]));
 
       const storage = drizzleStorage(db as never);
-      const result = await storage.updateShare("share-id-1", "user-1", { expiresAt: newExpiry });
+      const updateShare = getUpdateShare(storage);
+      const result = await updateShare("share-id-1", "user-1", { expiresAt: newExpiry });
 
       expect(result.expiresAt).toEqual(newExpiry);
     });
@@ -222,7 +230,8 @@ describe("drizzleStorage", () => {
       db.update = vi.fn().mockReturnValue(createUpdateChain([]));
 
       const storage = drizzleStorage(db as never);
-      await expect(storage.updateShare("bad-id", "user-1", { visibleFields: {} })).rejects.toThrow(
+      const updateShare = getUpdateShare(storage);
+      await expect(updateShare("bad-id", "user-1", { visibleFields: {} })).rejects.toThrow(
         "Share not found or unauthorized",
       );
     });

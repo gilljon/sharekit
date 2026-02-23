@@ -181,8 +181,8 @@ describe("handleAction", () => {
 
       await handleAction(instance, action, makeRequest());
 
-      const call = vi.mocked(storage.createShare).mock.calls[0][0];
-      expect(call.visibleFields.bio).toBe(false);
+      const call = vi.mocked(storage.createShare).mock.calls[0]?.[0];
+      expect(call?.visibleFields.bio).toBe(false);
     });
 
     it("strips trailing slash from baseUrl", async () => {

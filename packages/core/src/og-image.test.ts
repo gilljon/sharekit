@@ -21,7 +21,8 @@ const baseConfig: OGImageConfig = {
 
 function getSatoriCall() {
   const call = satoriMock.mock.calls[satoriMock.mock.calls.length - 1];
-  return call?.[0] as { type: string; props: Record<string, unknown> };
+  // biome-ignore lint/suspicious/noExplicitAny: test helper accessing satori's internal element shape
+  return call?.[0] as { type: string; props: Record<string, any> };
 }
 
 function getChildren(element: { props?: Record<string, unknown> }) {

@@ -173,12 +173,19 @@ describe("prismaStorage", () => {
   });
 
   describe("updateShare", () => {
+    function getUpdateShare(s: ReturnType<typeof prismaStorage>) {
+      const fn = s.updateShare;
+      if (!fn) throw new Error("updateShare not implemented");
+      return fn;
+    }
+
     it("updates visibleFields and returns Share", async () => {
       const updatedRow = makeRow({ visibleFields: { name: true, email: true } });
       prisma.shareableShare.update.mockResolvedValue(updatedRow);
 
       const storage = prismaStorage(prisma as never);
-      const result = await storage.updateShare("share-id-1", "user-1", {
+      const updateShare = getUpdateShare(storage);
+      const result = await updateShare("share-id-1", "user-1", {
         visibleFields: { name: true, email: true },
       });
 
@@ -195,7 +202,8 @@ describe("prismaStorage", () => {
       prisma.shareableShare.update.mockResolvedValue(updatedRow);
 
       const storage = prismaStorage(prisma as never);
-      const result = await storage.updateShare("share-id-1", "user-1", { expiresAt: newExpiry });
+      const updateShare = getUpdateShare(storage);
+      const result = await updateShare("share-id-1", "user-1", { expiresAt: newExpiry });
 
       expect(result.expiresAt).toEqual(newExpiry);
       expect(prisma.shareableShare.update).toHaveBeenCalledWith({
@@ -213,7 +221,8 @@ describe("prismaStorage", () => {
       prisma.shareableShare.update.mockResolvedValue(updatedRow);
 
       const storage = prismaStorage(prisma as never);
-      await storage.updateShare("share-id-1", "user-1", {
+      const updateShare = getUpdateShare(storage);
+      await updateShare("share-id-1", "user-1", {
         visibleFields: { name: true },
         expiresAt: newExpiry,
       });
