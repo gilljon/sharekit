@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/tanstack-start",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "TanStack Start adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",

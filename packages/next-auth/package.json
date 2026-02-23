@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/next-auth",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "NextAuth.js / Auth.js adapter for the Shareable SDK",
   "license": "MIT",
   "type": "module",

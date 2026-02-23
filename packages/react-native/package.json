@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/react-native",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "React Native components and API client for the Shareable SDK",
   "license": "MIT",
   "type": "module",
