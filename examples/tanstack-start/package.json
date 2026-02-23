@@ -1,0 +1,28 @@
+{
+  "name": "sharekit-tanstack-start-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@sharekit/core": "workspace:*",
+    "@sharekit/react": "workspace:*",
+    "@sharekit/tanstack-start": "workspace:*",
+    "@sharekit/drizzle": "workspace:*",
+    "@sharekit/better-auth": "workspace:*",
+    "@tanstack/react-router": "^1.120.0",
+    "@tanstack/start": "^1.120.0",
+    "better-auth": "^1.0.0",
+    "drizzle-orm": "^0.38.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-tsconfig-paths": "^5.1.0"
+  }
+}

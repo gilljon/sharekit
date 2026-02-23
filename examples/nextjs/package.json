@@ -1,0 +1,26 @@
+{
+  "name": "sharekit-nextjs-example",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build"
+  },
+  "dependencies": {
+    "@sharekit/core": "workspace:*",
+    "@sharekit/react": "workspace:*",
+    "@sharekit/next": "workspace:*",
+    "@sharekit/prisma": "workspace:*",
+    "@sharekit/next-auth": "workspace:*",
+    "next": "^15.0.0",
+    "next-auth": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.0.0 || ^6.0.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^5.0.0 || ^6.0.0"
+  }
+}

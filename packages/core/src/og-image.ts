@@ -430,6 +430,11 @@ export async function renderOGImagePng(
 
 let cachedFont: ArrayBuffer | null = null;
 
+/** @internal Test-only: resets the in-memory font cache */
+export function _resetFontCache(): void {
+  cachedFont = null;
+}
+
 async function getDefaultFont(): Promise<ArrayBuffer | null> {
   if (cachedFont) return cachedFont;
 

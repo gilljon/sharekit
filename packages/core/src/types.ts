@@ -59,9 +59,19 @@ export interface ShareAnalyticsData {
 export interface ShareableStorage {
   createShare(input: CreateShareInput): Promise<Share>;
   getShare(token: string): Promise<Share | null>;
-  getSharesByOwner(ownerId: string, type?: string): Promise<Share[]>;
+  getSharesByOwner(
+    ownerId: string,
+    type?: string,
+    filter?: { params?: Record<string, unknown> },
+  ): Promise<Share[]>;
   revokeShare(shareId: string, ownerId: string): Promise<void>;
   incrementViewCount(token: string): Promise<void>;
+  /** Optional: update a share's visibleFields and/or expiresAt. */
+  updateShare?(
+    shareId: string,
+    ownerId: string,
+    updates: { visibleFields?: VisibleFields; expiresAt?: Date },
+  ): Promise<Share>;
   /** Optional: return aggregate analytics. If not implemented, a default is derived from getSharesByOwner. */
   getAnalytics?(ownerId: string, type?: string): Promise<ShareAnalyticsData>;
 }
@@ -167,9 +177,10 @@ export type ShareableAction =
       params: Record<string, unknown>;
       expiresAt?: string;
     }
-  | { kind: "list"; type?: string }
+  | { kind: "list"; type?: string; params?: Record<string, unknown> }
   | { kind: "get"; token: string }
   | { kind: "revoke"; shareId: string }
+  | { kind: "update"; shareId: string; visibleFields?: VisibleFields; expiresAt?: Date }
   | { kind: "view"; token: string }
   | { kind: "og"; token: string }
   | { kind: "analytics"; type?: string };

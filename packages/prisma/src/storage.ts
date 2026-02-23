@@ -1,4 +1,4 @@
-import type { CreateShareInput, Share, ShareableStorage } from "@sharekit/core";
+import type { CreateShareInput, Share, ShareableStorage, VisibleFields } from "@sharekit/core";
 
 interface PrismaShareableShare {
   id: string;
@@ -78,9 +78,16 @@ export function prismaStorage(prisma: PrismaClient): ShareableStorage {
       return row ? rowToShare(row) : null;
     },
 
-    async getSharesByOwner(ownerId: string, type?: string): Promise<Share[]> {
+    async getSharesByOwner(
+      ownerId: string,
+      type?: string,
+      filter?: { params?: Record<string, unknown> },
+    ): Promise<Share[]> {
       const where: Record<string, unknown> = { ownerId };
       if (type) where.type = type;
+      if (filter?.params) {
+        where.params = { path: [], equals: filter.params };
+      }
 
       const rows = await prisma.shareableShare.findMany({
         where,
@@ -100,6 +107,22 @@ export function prismaStorage(prisma: PrismaClient): ShareableStorage {
         where: { token },
         data: { viewCount: { increment: 1 } as unknown as number },
       });
+    },
+
+    async updateShare(
+      shareId: string,
+      ownerId: string,
+      updates: { visibleFields?: VisibleFields; expiresAt?: Date },
+    ): Promise<Share> {
+      const data: Record<string, unknown> = {};
+      if (updates.visibleFields !== undefined) data.visibleFields = updates.visibleFields;
+      if (updates.expiresAt !== undefined) data.expiresAt = updates.expiresAt;
+
+      const row = await prisma.shareableShare.update({
+        where: { id: shareId, ownerId },
+        data,
+      });
+      return rowToShare(row as PrismaShareableShare);
     },
   };
 }

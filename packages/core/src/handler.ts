@@ -54,7 +54,8 @@ export async function handleAction(
       const user = await config.auth.getUser(request);
       if (!user) throw new ShareableError("Authentication required", 401);
 
-      const shares = await config.storage.getSharesByOwner(user.id, action.type);
+      const filter = action.params ? { params: action.params } : undefined;
+      const shares = await config.storage.getSharesByOwner(user.id, action.type, filter);
       return { shares };
     }
 
@@ -79,6 +80,23 @@ export async function handleAction(
 
       await config.storage.revokeShare(action.shareId, user.id);
       return { success: true };
+    }
+
+    case "update": {
+      if (!request) throw new ShareableError("Authentication required", 401);
+      const user = await config.auth.getUser(request);
+      if (!user) throw new ShareableError("Authentication required", 401);
+
+      if (!config.storage.updateShare) {
+        throw new ShareableError("Storage adapter does not support updates", 501);
+      }
+
+      const updates: { visibleFields?: Record<string, boolean>; expiresAt?: Date } = {};
+      if (action.visibleFields) updates.visibleFields = action.visibleFields;
+      if (action.expiresAt) updates.expiresAt = action.expiresAt;
+
+      const share = await config.storage.updateShare(action.shareId, user.id, updates);
+      return { share };
     }
 
     case "view": {
