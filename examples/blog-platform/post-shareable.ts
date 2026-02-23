@@ -7,10 +7,7 @@
  */
 import { shareable } from "./shareable.config";
 
-declare function getPostData(
-  userId: string,
-  postId: string,
-): Promise<Record<string, unknown>>;
+declare function getPostData(userId: string, postId: string): Promise<Record<string, unknown>>;
 
 export const postShare = shareable.define("post", {
   fields: {

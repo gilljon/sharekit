@@ -13,5 +13,7 @@ export function generateToken(length: number = DEFAULT_TOKEN_LENGTH): string {
 }
 
 export function validateToken(token: string): boolean {
-  return typeof token === "string" && token.length >= MIN_TOKEN_LENGTH && /^[a-f0-9]+$/i.test(token);
+  return (
+    typeof token === "string" && token.length >= MIN_TOKEN_LENGTH && /^[a-f0-9]+$/i.test(token)
+  );
 }

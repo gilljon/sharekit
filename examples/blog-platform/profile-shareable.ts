@@ -6,9 +6,7 @@
  */
 import { shareable } from "./shareable.config";
 
-declare function getProfileData(
-  userId: string,
-): Promise<Record<string, unknown>>;
+declare function getProfileData(userId: string): Promise<Record<string, unknown>>;
 
 export const profileShare = shareable.define("profile", {
   fields: {

@@ -49,11 +49,7 @@ export function TanStackSharedView({ data, config, token, children }: TanStackSh
       viewCount={data.viewCount}
       shareToken={token}
     >
-      {children ? (
-        children(data)
-      ) : (
-        <DefaultSharedView data={data} />
-      )}
+      {children ? children(data) : <DefaultSharedView data={data} />}
     </ShareableProvider>
   );
 }

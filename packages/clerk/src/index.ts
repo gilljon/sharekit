@@ -1,12 +1,12 @@
 import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
 
-interface ClerkAuthFn {
-  (): Promise<{ userId: string | null }>;
-}
+type ClerkAuthFn = () => Promise<{ userId: string | null }>;
 
-interface ClerkUserFn {
-  (): Promise<{ id: string; firstName: string | null; lastName: string | null } | null>;
-}
+type ClerkUserFn = () => Promise<{
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+} | null>;
 
 interface ClerkProviderOptions {
   /**

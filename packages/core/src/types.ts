@@ -97,9 +97,11 @@ export interface OGImageConfig {
   metrics?: OGImageMetric[];
 }
 
-export interface OGImageFn<TData = unknown> {
-  (ctx: { data: TData; visibleFields: VisibleFields; ownerName: string }): OGImageConfig;
-}
+export type OGImageFn<TData = unknown> = (ctx: {
+  data: TData;
+  visibleFields: VisibleFields;
+  ownerName: string;
+}) => OGImageConfig;
 
 export interface ShareableDefinitionInput<TData = unknown, TParams = Record<string, unknown>> {
   fields: FieldSchema;
@@ -156,7 +158,13 @@ export interface ShareableInstance {
 // ---------------------------------------------------------------------------
 
 export type ShareableAction =
-  | { kind: "create"; type: string; visibleFields: VisibleFields; params: Record<string, unknown>; expiresAt?: string }
+  | {
+      kind: "create";
+      type: string;
+      visibleFields: VisibleFields;
+      params: Record<string, unknown>;
+      expiresAt?: string;
+    }
   | { kind: "list"; type?: string }
   | { kind: "get"; token: string }
   | { kind: "revoke"; shareId: string }

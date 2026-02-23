@@ -62,7 +62,9 @@ export function getDefaults(schema: FieldSchema): VisibleFields {
 /**
  * Get the groups defined in a schema, with their labels and child paths.
  */
-export function getGroups(schema: FieldSchema): Array<{ key: string; label: string; children: string[] }> {
+export function getGroups(
+  schema: FieldSchema,
+): Array<{ key: string; label: string; children: string[] }> {
   const groups: Array<{ key: string; label: string; children: string[] }> = [];
   for (const [key, field] of Object.entries(schema)) {
     if (isGroup(field)) {
@@ -80,7 +82,10 @@ export function getGroups(schema: FieldSchema): Array<{ key: string; label: stri
  * Resolve field dependencies: if a field `requires` another field and that
  * field is not visible, force the dependent field to be hidden.
  */
-export function resolveDependencies(visibleFields: VisibleFields, schema: FieldSchema): VisibleFields {
+export function resolveDependencies(
+  visibleFields: VisibleFields,
+  schema: FieldSchema,
+): VisibleFields {
   const flat = flattenSchema(schema);
   const resolved = { ...visibleFields };
 
@@ -141,7 +146,8 @@ export function filterData<T>(data: T, visibleFields: VisibleFields): T {
 
     const parts = path.split(".");
     if (parts.length === 1) {
-      delete result[parts[0]!];
+      const key = parts[0];
+      if (key) delete result[key];
     } else if (parts.length === 2) {
       const [parent, child] = parts as [string, string];
       if (result[parent] && typeof result[parent] === "object") {

@@ -1,8 +1,8 @@
 import {
-  getDependencyWarnings,
-  getToggleConfig,
   type Share,
   type ToggleItem,
+  getDependencyWarnings,
+  getToggleConfig,
 } from "@sharekit/core";
 import { useCallback, useState } from "react";
 import { useShareableContext } from "./context.js";
@@ -16,7 +16,7 @@ export interface ShareModalProps {
   onClose?: () => void;
 }
 
-export function ShareModal({ onClose }: ShareModalProps) {
+export function ShareModal({ onClose: _onClose }: ShareModalProps) {
   const { schema } = useShareableContext();
   const manager = useShareManager();
   const [tab, setTab] = useState<"new" | "active">("new");
@@ -46,7 +46,7 @@ export function ShareModal({ onClose }: ShareModalProps) {
   );
 
   return (
-    <div data-shareable-modal="" role="dialog" aria-label="Share">
+    <dialog data-shareable-modal="" aria-label="Share" open>
       {/* Tab header */}
       <div data-shareable-tabs="">
         <button
@@ -86,9 +86,7 @@ export function ShareModal({ onClose }: ShareModalProps) {
             </div>
           )}
 
-          {manager.error && (
-            <p data-shareable-error="">{manager.error}</p>
-          )}
+          {manager.error && <p data-shareable-error="">{manager.error}</p>}
 
           <button
             type="button"
@@ -99,9 +97,7 @@ export function ShareModal({ onClose }: ShareModalProps) {
             {manager.isCreating ? "Creating..." : "Create Share Link"}
           </button>
 
-          {createdUrl && (
-            <p data-shareable-success="">Link copied to clipboard</p>
-          )}
+          {createdUrl && <p data-shareable-success="">Link copied to clipboard</p>}
         </div>
       )}
 
@@ -123,7 +119,7 @@ export function ShareModal({ onClose }: ShareModalProps) {
           ))}
         </div>
       )}
-    </div>
+    </dialog>
   );
 }
 
@@ -196,9 +192,7 @@ function ShareRow({
   return (
     <div data-shareable-share-row="">
       <div data-shareable-share-info="">
-        <span data-shareable-share-date="">
-          {new Date(share.createdAt).toLocaleDateString()}
-        </span>
+        <span data-shareable-share-date="">{new Date(share.createdAt).toLocaleDateString()}</span>
         <span data-shareable-share-views="">
           {share.viewCount} view{share.viewCount !== 1 ? "s" : ""}
         </span>

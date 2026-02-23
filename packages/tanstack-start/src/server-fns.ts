@@ -1,9 +1,9 @@
 import {
-  handleAction,
-  type ShareableInstance,
   type ShareAnalyticsData,
+  type ShareableInstance,
   type SharedViewData,
   type VisibleFields,
+  handleAction,
 } from "@sharekit/core";
 
 /**
@@ -76,7 +76,11 @@ export function createShareServerFns(instance: ShareableInstance) {
     },
 
     async analytics(request: Request, type?: string): Promise<ShareAnalyticsData> {
-      return handleAction(instance, { kind: "analytics", type }, request) as Promise<ShareAnalyticsData>;
+      return handleAction(
+        instance,
+        { kind: "analytics", type },
+        request,
+      ) as Promise<ShareAnalyticsData>;
     },
   };
 }

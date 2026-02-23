@@ -1,10 +1,10 @@
 import {
-  handleAction,
-  ShareableError,
-  renderOGImage,
-  type ShareableAction,
-  type ShareableInstance,
   type OGImageConfig,
+  type ShareableAction,
+  ShareableError,
+  type ShareableInstance,
+  handleAction,
+  renderOGImage,
 } from "@sharekit/core";
 
 function jsonResponse(data: unknown, status = 200) {
@@ -90,9 +90,13 @@ function parseRoute(
  * ```
  */
 export function createNextHandler(instance: ShareableInstance) {
-  async function handleRequest(request: Request, context: { params: Promise<{ shareable: string[] }> | { shareable: string[] } }) {
+  async function handleRequest(
+    request: Request,
+    context: { params: Promise<{ shareable: string[] }> | { shareable: string[] } },
+  ) {
     try {
-      const resolvedParams = context.params instanceof Promise ? await context.params : context.params;
+      const resolvedParams =
+        context.params instanceof Promise ? await context.params : context.params;
       const segments = resolvedParams.shareable;
       const url = new URL(request.url);
       const method = request.method;

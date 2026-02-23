@@ -51,7 +51,10 @@ export interface OGImageOptions {
    * this completely replaces the built-in template. It receives the
    * OGImageConfig so you can reference title/subtitle/metrics.
    */
-  customTemplate?: (config: OGImageConfig, colors: { bg: string; text: string; accent: string }) => unknown;
+  customTemplate?: (
+    config: OGImageConfig,
+    colors: { bg: string; text: string; accent: string },
+  ) => unknown;
 }
 
 const DEFAULT_WIDTH = 1200;
@@ -61,7 +64,12 @@ const DEFAULT_HEIGHT = 630;
 // Layout builders
 // ---------------------------------------------------------------------------
 
-function buildMetricsLayout(config: OGImageConfig, colors: { bg: string; text: string; accent: string }, fonts: OGFont[], branding?: OGBranding) {
+function buildMetricsLayout(
+  config: OGImageConfig,
+  colors: { bg: string; text: string; accent: string },
+  fonts: OGFont[],
+  branding?: OGBranding,
+) {
   const metrics = config.metrics?.filter(Boolean) ?? [];
   const fontFamily = fonts[0]?.name ?? "sans-serif";
 
@@ -90,7 +98,12 @@ function buildMetricsLayout(config: OGImageConfig, colors: { bg: string; text: s
   };
 }
 
-function buildCardLayout(config: OGImageConfig, colors: { bg: string; text: string; accent: string }, fonts: OGFont[], branding?: OGBranding) {
+function buildCardLayout(
+  config: OGImageConfig,
+  colors: { bg: string; text: string; accent: string },
+  fonts: OGFont[],
+  branding?: OGBranding,
+) {
   const metrics = config.metrics?.filter(Boolean) ?? [];
   const fontFamily = fonts[0]?.name ?? "sans-serif";
 
@@ -135,7 +148,11 @@ function buildCardLayout(config: OGImageConfig, colors: { bg: string; text: stri
   };
 }
 
-function buildMinimalLayout(config: OGImageConfig, colors: { bg: string; text: string; accent: string }, fonts: OGFont[]) {
+function buildMinimalLayout(
+  config: OGImageConfig,
+  colors: { bg: string; text: string; accent: string },
+  fonts: OGFont[],
+) {
   const fontFamily = fonts[0]?.name ?? "sans-serif";
 
   return {
@@ -316,7 +333,12 @@ function buildMetricsRow(metrics: Array<{ label: string; value: string }>, accen
 // Gradient wrapper
 // ---------------------------------------------------------------------------
 
-function wrapWithGradient(element: unknown, gradient: [string, string], width: number, height: number) {
+function wrapWithGradient(
+  element: unknown,
+  gradient: [string, string],
+  width: number,
+  height: number,
+) {
   return {
     type: "div",
     props: {
@@ -439,10 +461,7 @@ const googleFontCache = new Map<string, ArrayBuffer>();
  * });
  * ```
  */
-export async function loadGoogleFont(
-  family: string,
-  weight: number = 400,
-): Promise<ArrayBuffer> {
+export async function loadGoogleFont(family: string, weight = 400): Promise<ArrayBuffer> {
   const cacheKey = `${family}:${weight}`;
   const cached = googleFontCache.get(cacheKey);
   if (cached) return cached;

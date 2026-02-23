@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 import { ShareManager } from "./share-manager.js";
 import { ShareModal } from "./share-modal.js";
 
@@ -15,11 +15,7 @@ export interface ShareButtonProps {
  * A self-contained share button that opens the share modal on click.
  * Wraps itself in a ShareManager for state management.
  */
-export function ShareButton({
-  label = "Share",
-  className,
-  renderModal,
-}: ShareButtonProps) {
+export function ShareButton({ label = "Share", className, renderModal }: ShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = useCallback(() => setIsOpen(false), []);
@@ -51,7 +47,11 @@ export function ShareButton({
               >
                 &times;
               </button>
-              {renderModal ? renderModal({ onClose: handleClose }) : <ShareModal onClose={handleClose} />}
+              {renderModal ? (
+                renderModal({ onClose: handleClose })
+              ) : (
+                <ShareModal onClose={handleClose} />
+              )}
             </div>
           </div>
         </ShareManager>

@@ -4,9 +4,7 @@ import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
 // NextAuth v5 (Auth.js) types
 // ---------------------------------------------------------------------------
 
-interface AuthJsInstance {
-  (): Promise<AuthJsSession | null>;
-}
+type AuthJsInstance = () => Promise<AuthJsSession | null>;
 
 interface AuthJsSession {
   user?: { id?: string; name?: string; email?: string };
@@ -21,9 +19,9 @@ interface NextAuthV4Options {
   [key: string]: unknown;
 }
 
-interface GetServerSessionFn {
-  (options: NextAuthV4Options): Promise<{ user?: { id?: string; name?: string; email?: string } } | null>;
-}
+type GetServerSessionFn = (
+  options: NextAuthV4Options,
+) => Promise<{ user?: { id?: string; name?: string; email?: string } } | null>;
 
 // ---------------------------------------------------------------------------
 // Provider overloads
@@ -82,9 +80,8 @@ export function nextAuthProvider(options: NextAuthProviderOptions): ShareableAut
 
         if (!session?.user) return null;
 
-        const userId = idField === "email"
-          ? session.user.email
-          : session.user.id ?? session.user.email;
+        const userId =
+          idField === "email" ? session.user.email : (session.user.id ?? session.user.email);
 
         if (!userId) return null;
 

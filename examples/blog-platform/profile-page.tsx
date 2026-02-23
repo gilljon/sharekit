@@ -10,7 +10,11 @@ import { profileShare } from "./profile-shareable";
 const Profile = defineShareableComponents(profileShare);
 
 declare function BioCard(props: { bio: string }): JSX.Element;
-declare function StatsGrid(props: { followers: number; posts: number; readTime: number }): JSX.Element;
+declare function StatsGrid(props: {
+  followers: number;
+  posts: number;
+  readTime: number;
+}): JSX.Element;
 declare function EarningsCard(props: { amount: number }): JSX.Element;
 declare function TopPostsList(props: { posts: any[] }): JSX.Element;
 declare function ViewsChart(props: { data: any }): JSX.Element;

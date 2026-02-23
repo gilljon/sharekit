@@ -1,5 +1,5 @@
 import type { ShareAnalyticsData } from "@sharekit/core";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 export interface UseShareAnalyticsOptions {
   apiBasePath?: string;

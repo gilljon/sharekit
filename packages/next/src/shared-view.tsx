@@ -1,8 +1,8 @@
 import {
-  handleAction,
   ShareableError,
   type ShareableInstance,
   type SharedViewData,
+  handleAction,
 } from "@sharekit/core";
 import { ShareableProvider } from "@sharekit/react";
 import type { ReactNode } from "react";
@@ -95,7 +95,9 @@ function DefaultSharedView({ data }: { data: SharedViewData }) {
     <div data-shareable-shared-view="">
       <header data-shareable-shared-header="">
         <p>Shared by {data.ownerName}</p>
-        <p>{data.viewCount} view{data.viewCount !== 1 ? "s" : ""}</p>
+        <p>
+          {data.viewCount} view{data.viewCount !== 1 ? "s" : ""}
+        </p>
       </header>
       <pre>{JSON.stringify(data.data, null, 2)}</pre>
     </div>

@@ -7,7 +7,6 @@ import type {
   ShareableAction,
   ShareableInstance,
   SharedViewData,
-  VisibleFields,
 } from "./types.js";
 
 /**
@@ -117,11 +116,13 @@ export async function handleAction(
       }
 
       const ownerDisplay = config.defaults?.ownerDisplay ?? "first-name";
-      const ownerUser = await config.auth.getUser(
-        new Request("http://internal", {
-          headers: { "x-shareable-owner-id": share.ownerId },
-        }),
-      ).catch(() => null);
+      const ownerUser = await config.auth
+        .getUser(
+          new Request("http://internal", {
+            headers: { "x-shareable-owner-id": share.ownerId },
+          }),
+        )
+        .catch(() => null);
 
       const ownerName = formatOwnerName(ownerUser?.name, ownerDisplay);
 
@@ -157,11 +158,13 @@ export async function handleAction(
       const filteredData = filterData(rawData, resolved);
 
       const ownerDisplay = config.defaults?.ownerDisplay ?? "first-name";
-      const ownerUser = await config.auth.getUser(
-        new Request("http://internal", {
-          headers: { "x-shareable-owner-id": share.ownerId },
-        }),
-      ).catch(() => null);
+      const ownerUser = await config.auth
+        .getUser(
+          new Request("http://internal", {
+            headers: { "x-shareable-owner-id": share.ownerId },
+          }),
+        )
+        .catch(() => null);
 
       const ownerName = formatOwnerName(ownerUser?.name, ownerDisplay);
 

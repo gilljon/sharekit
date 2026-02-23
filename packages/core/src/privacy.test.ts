@@ -119,7 +119,12 @@ describe("getDependencyWarnings", () => {
 
 describe("filterData", () => {
   it("removes top-level keys for hidden fields", () => {
-    const data = { followerCount: 1200, earnings: 5400, email: "user@test.com", topPosts: ["a", "b"] };
+    const data = {
+      followerCount: 1200,
+      earnings: 5400,
+      email: "user@test.com",
+      topPosts: ["a", "b"],
+    };
     const visible = { followerCount: true, earnings: false, email: false, topPosts: true };
 
     const filtered = filterData(data, visible);

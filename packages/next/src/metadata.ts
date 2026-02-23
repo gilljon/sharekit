@@ -1,8 +1,8 @@
 import {
-  handleAction,
+  type OGImageConfig,
   ShareableError,
   type ShareableInstance,
-  type OGImageConfig,
+  handleAction,
 } from "@sharekit/core";
 
 /**

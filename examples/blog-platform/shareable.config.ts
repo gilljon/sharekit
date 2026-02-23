@@ -1,3 +1,4 @@
+import { betterAuthProvider } from "@sharekit/better-auth";
 /**
  * Example: Configuring @sharekit for a blog platform
  *
@@ -7,7 +8,6 @@
  */
 import { createShareable } from "@sharekit/core";
 import { drizzleStorage } from "@sharekit/drizzle";
-import { betterAuthProvider } from "@sharekit/better-auth";
 
 declare const db: any;
 declare const auth: any;

@@ -45,11 +45,7 @@ export function RemixSharedView({ data, config, token, children }: RemixSharedVi
       viewCount={data.viewCount}
       shareToken={token}
     >
-      {children ? (
-        children(data)
-      ) : (
-        <DefaultSharedView data={data} />
-      )}
+      {children ? children(data) : <DefaultSharedView data={data} />}
     </ShareableProvider>
   );
 }
