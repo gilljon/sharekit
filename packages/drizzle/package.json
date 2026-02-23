@@ -1,0 +1,35 @@
+{
+  "name": "@shareable/drizzle",
+  "version": "0.1.0",
+  "description": "Drizzle ORM storage adapter for the Shareable SDK",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@shareable/core": "workspace:*"
+  },
+  "devDependencies": {
+    "drizzle-orm": "^0.38.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "^0.38.0"
+  }
+}
