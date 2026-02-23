@@ -1,10 +1,30 @@
-import { type Share, type VisibleFields, getDefaults, resolveDependencies } from "@sharekit/core";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { useShareableContext } from "./context.js";
-import { ShareManagerContext, type ShareManagerContextValue } from "./context.js";
+import type { Share, VisibleFields } from "@sharekit/core";
+import { useCallback, useEffect, useState } from "react";
+import type { ShareClient } from "./client.js";
 
-export interface ShareManagerProps {
-  children: ReactNode | ((ctx: ShareManagerContextValue) => ReactNode);
+export interface CreateShareResult {
+  token: string;
+  url: string;
+}
+
+export interface UseShareCrudOptions {
+  type: string;
+  client: ShareClient;
+  baseUrl: string;
+  visibleFields: VisibleFields;
+  params?: Record<string, unknown>;
+}
+
+export interface UseShareCrudReturn {
+  shares: Share[];
+  isLoading: boolean;
+  isCreating: boolean;
+  error: string | null;
+  createShare: (expiresAt?: Date) => Promise<CreateShareResult | null>;
+  revokeShare: (shareId: string) => Promise<void>;
+  copyLink: (token: string) => Promise<void>;
+  shareNative: (token: string) => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 async function tryClipboardCopy(text: string): Promise<void> {
@@ -12,7 +32,7 @@ async function tryClipboardCopy(text: string): Promise<void> {
     const Clipboard = await import("expo-clipboard");
     await Clipboard.setStringAsync(text);
   } catch {
-    /* expo-clipboard not installed -- silently skip */
+    /* expo-clipboard not installed */
   }
 }
 
@@ -24,22 +44,31 @@ async function tryNativeShare(url: string): Promise<void> {
       await Sharing.shareAsync(url, { dialogTitle: "Share link" });
     }
   } catch {
-    /* expo-sharing not installed -- silently skip */
+    /* expo-sharing not installed */
   }
 }
 
-export function ShareManager({ children }: ShareManagerProps) {
-  const shareableCtx = useShareableContext();
-  const { type, schema, client, params, baseUrl } = shareableCtx;
-
+/**
+ * Standalone hook for share CRUD operations on React Native.
+ *
+ * Uses a `ShareClient` instance for network calls and Expo modules
+ * for clipboard/native sharing. Decoupled from toggle state -- accepts
+ * `visibleFields` as a parameter so it can be composed with `useToggleFields`.
+ * No provider wrapping required.
+ */
+export function useShareCrud({
+  type,
+  client,
+  baseUrl,
+  visibleFields,
+  params = {},
+}: UseShareCrudOptions): UseShareCrudReturn {
   const [shares, setShares] = useState<Share[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [visibleFields, setVisibleFieldsState] = useState<VisibleFields>(() => getDefaults(schema));
 
   const fetchShares = useCallback(async () => {
-    if (!client) return;
     setIsLoading(true);
     setError(null);
     try {
@@ -56,31 +85,13 @@ export function ShareManager({ children }: ShareManagerProps) {
     fetchShares();
   }, [fetchShares]);
 
-  const setFieldVisible = useCallback(
-    (path: string, visible: boolean) => {
-      setVisibleFieldsState((prev) => {
-        const next = { ...prev, [path]: visible };
-        return resolveDependencies(next, schema);
-      });
-    },
-    [schema],
-  );
-
-  const setAllFieldsVisible = useCallback(
-    (visible: boolean) => {
-      const defaults = getDefaults(schema);
-      const updated: VisibleFields = {};
-      for (const key of Object.keys(defaults)) {
-        updated[key] = visible;
-      }
-      setVisibleFieldsState(updated);
-    },
-    [schema],
+  const buildShareUrl = useCallback(
+    (token: string) => `${baseUrl}/shared/${type}/${token}`,
+    [baseUrl, type],
   );
 
   const createShare = useCallback(
-    async (expiresAt?: Date) => {
-      if (!client) return null;
+    async (expiresAt?: Date): Promise<CreateShareResult | null> => {
       setIsCreating(true);
       setError(null);
       try {
@@ -99,7 +110,6 @@ export function ShareManager({ children }: ShareManagerProps) {
 
   const revokeShare = useCallback(
     async (shareId: string) => {
-      if (!client) return;
       setError(null);
       try {
         await client.revoke(type, shareId);
@@ -109,11 +119,6 @@ export function ShareManager({ children }: ShareManagerProps) {
       }
     },
     [client, type, fetchShares],
-  );
-
-  const buildShareUrl = useCallback(
-    (token: string) => `${baseUrl}/shared/${type}/${token}`,
-    [baseUrl, type],
   );
 
   const copyLink = useCallback(
@@ -130,23 +135,15 @@ export function ShareManager({ children }: ShareManagerProps) {
     [buildShareUrl],
   );
 
-  const value: ShareManagerContextValue = {
+  return {
     shares,
     isLoading,
+    isCreating,
     error,
-    visibleFields,
-    setFieldVisible,
-    setAllFieldsVisible,
     createShare,
     revokeShare,
     copyLink,
     shareNative,
-    isCreating,
+    refresh: fetchShares,
   };
-
-  return (
-    <ShareManagerContext value={value}>
-      {typeof children === "function" ? children(value) : children}
-    </ShareManagerContext>
-  );
 }
