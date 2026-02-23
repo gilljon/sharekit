@@ -1,6 +1,6 @@
 {
   "name": "@sharekit/core",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Core engine for the Shareable SDK -- token management, privacy engine, types",
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./png": {
+      "types": "./dist/og-image-png.d.ts",
+      "import": "./dist/og-image-png.js",
+      "require": "./dist/og-image-png.cjs"
     }
   },
   "files": ["dist", "README.md"],

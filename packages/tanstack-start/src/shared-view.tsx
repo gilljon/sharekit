@@ -1,5 +1,5 @@
 import type { ShareableInstance, SharedViewData } from "@sharekit/core";
-import { ShareableProvider } from "@sharekit/react";
+import { DefaultSharedView, ShareableProvider } from "@sharekit/react";
 import type { ReactNode } from "react";
 
 export interface TanStackSharedViewProps {
@@ -51,19 +51,5 @@ export function TanStackSharedView({ data, config, token, children }: TanStackSh
     >
       {children ? children(data) : <DefaultSharedView data={data} />}
     </ShareableProvider>
-  );
-}
-
-function DefaultSharedView({ data }: { data: SharedViewData }) {
-  return (
-    <div data-shareable-shared-view="">
-      <header data-shareable-shared-header="">
-        <p>Shared by {data.ownerName}</p>
-        <p>
-          {data.viewCount} view{data.viewCount !== 1 ? "s" : ""}
-        </p>
-      </header>
-      <pre>{JSON.stringify(data.data, null, 2)}</pre>
-    </div>
   );
 }

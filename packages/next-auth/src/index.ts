@@ -1,4 +1,5 @@
 import type { ShareableAuthProvider, ShareableUser } from "@sharekit/core";
+import { checkOwnerIdHeader } from "@sharekit/core";
 
 // ---------------------------------------------------------------------------
 // NextAuth v5 (Auth.js) types
@@ -62,10 +63,8 @@ export function nextAuthProvider(options: NextAuthProviderOptions): ShareableAut
 
   return {
     async getUser(request: Request): Promise<ShareableUser | null> {
-      const ownerIdHeader = request.headers.get("x-shareable-owner-id");
-      if (ownerIdHeader) {
-        return { id: ownerIdHeader };
-      }
+      const headerUser = checkOwnerIdHeader(request);
+      if (headerUser) return headerUser;
 
       try {
         let session: { user?: { id?: string; name?: string; email?: string } } | null = null;

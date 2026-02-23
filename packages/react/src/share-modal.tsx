@@ -158,7 +158,12 @@ function ToggleRow({
                 checked={manager.visibleFields[child.path] ?? child.defaultVisible}
                 onChange={(e) => manager.setFieldVisible(child.path, e.target.checked)}
               />
-              <span>{child.label}</span>
+              <span>
+                <span data-shareable-toggle-label="">{child.label}</span>
+                {child.description && (
+                  <span data-shareable-toggle-description="">{child.description}</span>
+                )}
+              </span>
             </label>
           ))}
         </div>
@@ -173,7 +178,10 @@ function ToggleRow({
         checked={manager.visibleFields[item.path] ?? item.defaultVisible}
         onChange={(e) => manager.setFieldVisible(item.path, e.target.checked)}
       />
-      <span>{item.label}</span>
+      <span>
+        <span data-shareable-toggle-label="">{item.label}</span>
+        {item.description && <span data-shareable-toggle-description="">{item.description}</span>}
+      </span>
     </label>
   );
 }

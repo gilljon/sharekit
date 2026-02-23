@@ -1,4 +1,5 @@
 import type { CreateShareInput, Share, ShareableStorage, VisibleFields } from "@sharekit/core";
+import { mapRowToShare } from "@sharekit/core";
 import { and, eq, sql } from "drizzle-orm";
 import { shareableShares } from "./schema.js";
 
@@ -8,20 +9,6 @@ type DrizzleDb = {
   update: (...args: unknown[]) => unknown;
   delete: (...args: unknown[]) => unknown;
 };
-
-function rowToShare(row: typeof shareableShares.$inferSelect): Share {
-  return {
-    id: row.id,
-    type: row.type,
-    token: row.token,
-    ownerId: row.ownerId,
-    params: (row.params as Record<string, unknown>) ?? {},
-    visibleFields: (row.visibleFields as Record<string, boolean>) ?? {},
-    viewCount: row.viewCount,
-    createdAt: row.createdAt,
-    expiresAt: row.expiresAt,
-  };
-}
 
 /**
  * Creates a ShareableStorage backed by Drizzle ORM.
@@ -47,7 +34,7 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
         .returning()) as (typeof shareableShares.$inferSelect)[];
 
       if (!row) throw new Error("Failed to create share");
-      return rowToShare(row);
+      return mapRowToShare(row);
     },
 
     async getShare(token: string): Promise<Share | null> {
@@ -57,7 +44,7 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
         .where(eq(shareableShares.token, token))
         .limit(1)) as (typeof shareableShares.$inferSelect)[];
 
-      return row ? rowToShare(row) : null;
+      return row ? mapRowToShare(row) : null;
     },
 
     async getSharesByOwner(
@@ -79,7 +66,7 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
         .where(and(...conditions))
         .orderBy(shareableShares.createdAt)) as (typeof shareableShares.$inferSelect)[];
 
-      return rows.map(rowToShare);
+      return rows.map(mapRowToShare);
     },
 
     async revokeShare(shareId: string, ownerId: string): Promise<void> {
@@ -111,7 +98,7 @@ export function drizzleStorage(db: DrizzleDb): ShareableStorage {
         .returning()) as (typeof shareableShares.$inferSelect)[];
 
       if (!row) throw new Error("Share not found or unauthorized");
-      return rowToShare(row);
+      return mapRowToShare(row);
     },
   };
 }

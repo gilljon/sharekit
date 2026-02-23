@@ -41,3 +41,9 @@ export {
   type ShareItemRenderProps,
   type DependencyWarningsProps,
 } from "./primitives.js";
+export {
+  DefaultSharedView,
+  DefaultNotFound,
+  DefaultExpired,
+  DefaultError,
+} from "./default-views.js";

@@ -172,8 +172,14 @@
 
 [data-shareable-toggle] > span:first-of-type {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   font-size: 0.875rem;
   color: var(--sharekit-text);
+}
+
+[data-shareable-toggle-label] {
+  line-height: 1.25;
 }
 
 [data-shareable-switch-wrap] {
@@ -230,9 +236,10 @@
 }
 
 [data-shareable-toggle-description] {
-  width: 100%;
-  margin-left: 2.75rem;
-  font-size: 0.8125rem;
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
   color: var(--sharekit-text-muted);
 }
 

@@ -1,9 +1,4 @@
-import {
-  type OGImageConfig,
-  ShareableError,
-  type ShareableInstance,
-  handleAction,
-} from "@sharekit/core";
+import { ShareableError, type ShareableInstance, getShareMeta } from "@sharekit/core";
 
 /**
  * Generate Next.js metadata for a shared page, including OG image tags.
@@ -16,30 +11,24 @@ import {
  * }
  * ```
  */
-export async function getSharedMetadata(
-  instance: ShareableInstance,
-  type: string,
-  token: string,
-  options?: { baseUrl?: string },
-) {
+export async function getSharedMetadata(instance: ShareableInstance, type: string, token: string) {
   try {
-    const ogConfig = (await handleAction(instance, { kind: "og", token })) as OGImageConfig;
-    const baseUrl = options?.baseUrl ?? instance.config.baseUrl;
-    const ogImageUrl = `${baseUrl}/api/shareable/${type}/${token}/og`;
+    const meta = await getShareMeta(instance, type, token);
+    if (!meta) return { title: "Share not found" };
 
     return {
-      title: ogConfig.title,
-      description: ogConfig.subtitle,
+      title: meta.title,
+      description: meta.description,
       openGraph: {
-        title: ogConfig.title,
-        description: ogConfig.subtitle,
-        images: [{ url: ogImageUrl, width: 1200, height: 630 }],
+        title: meta.title,
+        description: meta.description,
+        images: meta.ogImageUrl ? [{ url: meta.ogImageUrl, width: 1200, height: 630 }] : [],
       },
       twitter: {
         card: "summary_large_image" as const,
-        title: ogConfig.title,
-        description: ogConfig.subtitle,
-        images: [ogImageUrl],
+        title: meta.title,
+        description: meta.description,
+        images: meta.ogImageUrl ? [meta.ogImageUrl] : [],
       },
     };
   } catch (err) {

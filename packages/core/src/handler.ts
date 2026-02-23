@@ -5,9 +5,75 @@ import type {
   Share,
   ShareAnalyticsData,
   ShareableAction,
+  ShareableAuthProvider,
+  ShareableConfig,
+  ShareableDefinition,
   ShareableInstance,
+  ShareableUser,
   SharedViewData,
+  VisibleFields,
 } from "./types.js";
+
+// ---------------------------------------------------------------------------
+// Internal helpers (reduce repetition across action cases)
+// ---------------------------------------------------------------------------
+
+async function requireAuth(
+  request: Request | undefined,
+  auth: ShareableAuthProvider,
+): Promise<ShareableUser> {
+  if (!request) throw new ShareableError("Authentication required", 401);
+  const user = await auth.getUser(request);
+  if (!user) throw new ShareableError("Authentication required", 401);
+  return user;
+}
+
+function requireValidToken(token: string): void {
+  if (!validateToken(token)) {
+    throw new ShareableError("Invalid share token", 400);
+  }
+}
+
+function requireNotExpired(share: Share): void {
+  if (share.expiresAt && share.expiresAt < new Date()) {
+    throw new ShareableError("Share has expired", 410);
+  }
+}
+
+async function resolveOwnerName(config: ShareableConfig, ownerId: string): Promise<string> {
+  const ownerDisplay = config.defaults?.ownerDisplay ?? "first-name";
+  const ownerUser = await config.auth
+    .getUser(
+      new Request("http://internal", {
+        headers: { "x-shareable-owner-id": ownerId },
+      }),
+    )
+    .catch(() => null);
+  return formatOwnerName(ownerUser?.name, ownerDisplay);
+}
+
+async function getFilteredData(
+  definition: ShareableDefinition,
+  share: Share,
+): Promise<{ data: unknown; resolved: VisibleFields }> {
+  const rawData = await definition.getData({
+    ownerId: share.ownerId,
+    params: share.params,
+  });
+
+  const resolved = resolveDependencies(share.visibleFields, definition.fields);
+  let data = filterData(rawData, resolved);
+
+  if (definition.filterData) {
+    data = definition.filterData({ data, visibleFields: resolved });
+  }
+
+  return { data, resolved };
+}
+
+// ---------------------------------------------------------------------------
+// Core request handler
+// ---------------------------------------------------------------------------
 
 /**
  * Core request handler. Framework adapters call this with a parsed action and
@@ -22,9 +88,7 @@ export async function handleAction(
 
   switch (action.kind) {
     case "create": {
-      if (!request) throw new ShareableError("Authentication required", 401);
-      const user = await config.auth.getUser(request);
-      if (!user) throw new ShareableError("Authentication required", 401);
+      const user = await requireAuth(request, config.auth);
 
       const definition = instance.getDefinition(action.type);
       if (!definition) throw new ShareableError(`Unknown shareable type: ${action.type}`, 400);
@@ -50,42 +114,28 @@ export async function handleAction(
     }
 
     case "list": {
-      if (!request) throw new ShareableError("Authentication required", 401);
-      const user = await config.auth.getUser(request);
-      if (!user) throw new ShareableError("Authentication required", 401);
-
+      const user = await requireAuth(request, config.auth);
       const filter = action.params ? { params: action.params } : undefined;
       const shares = await config.storage.getSharesByOwner(user.id, action.type, filter);
       return { shares };
     }
 
     case "get": {
-      if (!validateToken(action.token)) {
-        throw new ShareableError("Invalid share token", 400);
-      }
+      requireValidToken(action.token);
       const share = await config.storage.getShare(action.token);
       if (!share) throw new ShareableError("Share not found", 404);
-
-      if (share.expiresAt && share.expiresAt < new Date()) {
-        throw new ShareableError("Share has expired", 410);
-      }
-
+      requireNotExpired(share);
       return { share };
     }
 
     case "revoke": {
-      if (!request) throw new ShareableError("Authentication required", 401);
-      const user = await config.auth.getUser(request);
-      if (!user) throw new ShareableError("Authentication required", 401);
-
+      const user = await requireAuth(request, config.auth);
       await config.storage.revokeShare(action.shareId, user.id);
       return { success: true };
     }
 
     case "update": {
-      if (!request) throw new ShareableError("Authentication required", 401);
-      const user = await config.auth.getUser(request);
-      if (!user) throw new ShareableError("Authentication required", 401);
+      const user = await requireAuth(request, config.auth);
 
       if (!config.storage.updateShare) {
         throw new ShareableError("Storage adapter does not support updates", 501);
@@ -100,16 +150,11 @@ export async function handleAction(
     }
 
     case "view": {
-      if (!validateToken(action.token)) {
-        throw new ShareableError("Invalid share token", 400);
-      }
+      requireValidToken(action.token);
 
       const share = await config.storage.getShare(action.token);
       if (!share) throw new ShareableError("Share not found", 404);
-
-      if (share.expiresAt && share.expiresAt < new Date()) {
-        throw new ShareableError("Share has expired", 410);
-      }
+      requireNotExpired(share);
 
       const definition = instance.getDefinition(share.type);
       if (!definition) throw new ShareableError(`Unknown shareable type: ${share.type}`, 500);
@@ -118,31 +163,8 @@ export async function handleAction(
         await config.storage.incrementViewCount(action.token);
       }
 
-      const rawData = await definition.getData({
-        ownerId: share.ownerId,
-        params: share.params,
-      });
-
-      const resolved = resolveDependencies(share.visibleFields, definition.fields);
-      let filteredData = filterData(rawData, resolved);
-
-      if (definition.filterData) {
-        filteredData = definition.filterData({
-          data: filteredData,
-          visibleFields: resolved,
-        });
-      }
-
-      const ownerDisplay = config.defaults?.ownerDisplay ?? "first-name";
-      const ownerUser = await config.auth
-        .getUser(
-          new Request("http://internal", {
-            headers: { "x-shareable-owner-id": share.ownerId },
-          }),
-        )
-        .catch(() => null);
-
-      const ownerName = formatOwnerName(ownerUser?.name, ownerDisplay);
+      const { data: filteredData, resolved } = await getFilteredData(definition, share);
+      const ownerName = await resolveOwnerName(config, share.ownerId);
 
       const result: SharedViewData = {
         data: filteredData,
@@ -157,9 +179,7 @@ export async function handleAction(
     }
 
     case "og": {
-      if (!validateToken(action.token)) {
-        throw new ShareableError("Invalid share token", 400);
-      }
+      requireValidToken(action.token);
 
       const share = await config.storage.getShare(action.token);
       if (!share) throw new ShareableError("Share not found", 404);
@@ -167,38 +187,18 @@ export async function handleAction(
       const definition = instance.getDefinition(share.type);
       if (!definition?.ogImage) throw new ShareableError("OG image not configured", 404);
 
-      const rawData = await definition.getData({
-        ownerId: share.ownerId,
-        params: share.params,
-      });
+      const { data: filteredData, resolved } = await getFilteredData(definition, share);
+      const ownerName = await resolveOwnerName(config, share.ownerId);
 
-      const resolved = resolveDependencies(share.visibleFields, definition.fields);
-      const filteredData = filterData(rawData, resolved);
-
-      const ownerDisplay = config.defaults?.ownerDisplay ?? "first-name";
-      const ownerUser = await config.auth
-        .getUser(
-          new Request("http://internal", {
-            headers: { "x-shareable-owner-id": share.ownerId },
-          }),
-        )
-        .catch(() => null);
-
-      const ownerName = formatOwnerName(ownerUser?.name, ownerDisplay);
-
-      const ogConfig = definition.ogImage({
+      return definition.ogImage({
         data: filteredData,
         visibleFields: resolved,
         ownerName,
       });
-
-      return ogConfig;
     }
 
     case "analytics": {
-      if (!request) throw new ShareableError("Authentication required", 401);
-      const user = await config.auth.getUser(request);
-      if (!user) throw new ShareableError("Authentication required", 401);
+      const user = await requireAuth(request, config.auth);
 
       if (config.storage.getAnalytics) {
         return config.storage.getAnalytics(user.id, action.type);
