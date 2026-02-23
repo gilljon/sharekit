@@ -1,28 +1,46 @@
-import { type Share, type VisibleFields, getDefaults, resolveDependencies } from "@sharekit/core";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { useShareableContext } from "./context.js";
-import { ShareManagerContext, type ShareManagerContextValue } from "./context.js";
+import type { Share, VisibleFields } from "@sharekit/core";
+import { useCallback, useEffect, useState } from "react";
 
-export interface ShareManagerProps {
-  children: ReactNode | ((ctx: ShareManagerContextValue) => ReactNode);
+export interface CreateShareResult {
+  token: string;
+  url: string;
+}
+
+export interface UseShareCrudOptions {
+  type: string;
+  apiBasePath?: string;
+  visibleFields: VisibleFields;
+  params?: Record<string, unknown>;
+}
+
+export interface UseShareCrudReturn {
+  shares: Share[];
+  isLoading: boolean;
+  isCreating: boolean;
+  error: string | null;
+  createShare: (expiresAt?: Date) => Promise<CreateShareResult | null>;
+  revokeShare: (shareId: string) => Promise<void>;
+  copyLink: (token: string) => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 /**
- * Manages share CRUD operations. Provides state for creating/listing/revoking
- * shares, and exposes privacy field toggles.
+ * Standalone hook for share CRUD operations (list, create, revoke, copy).
  *
- * Can be used with render props for full customisation, or as a provider
- * for the built-in ShareButton/ShareModal components.
+ * Decoupled from toggle state -- accepts `visibleFields` as a parameter
+ * so it can be composed with `useToggleFields` or any other state source.
+ * No provider wrapping required.
  */
-export function ShareManager({ children }: ShareManagerProps) {
-  const shareableCtx = useShareableContext();
-  const { type, schema, apiBasePath, params } = shareableCtx;
-
+export function useShareCrud({
+  type,
+  apiBasePath = "/api/shareable",
+  visibleFields,
+  params = {},
+}: UseShareCrudOptions): UseShareCrudReturn {
   const [shares, setShares] = useState<Share[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [visibleFields, setVisibleFieldsState] = useState<VisibleFields>(() => getDefaults(schema));
 
   const fetchShares = useCallback(async () => {
     setIsLoading(true);
@@ -43,30 +61,8 @@ export function ShareManager({ children }: ShareManagerProps) {
     fetchShares();
   }, [fetchShares]);
 
-  const setFieldVisible = useCallback(
-    (path: string, visible: boolean) => {
-      setVisibleFieldsState((prev) => {
-        const next = { ...prev, [path]: visible };
-        return resolveDependencies(next, schema);
-      });
-    },
-    [schema],
-  );
-
-  const setAllFieldsVisible = useCallback(
-    (visible: boolean) => {
-      const defaults = getDefaults(schema);
-      const updated: VisibleFields = {};
-      for (const key of Object.keys(defaults)) {
-        updated[key] = visible;
-      }
-      setVisibleFieldsState(updated);
-    },
-    [schema],
-  );
-
   const createShare = useCallback(
-    async (expiresAt?: Date) => {
+    async (expiresAt?: Date): Promise<CreateShareResult | null> => {
       setIsCreating(true);
       setError(null);
       try {
@@ -124,22 +120,14 @@ export function ShareManager({ children }: ShareManagerProps) {
     [type],
   );
 
-  const value: ShareManagerContextValue = {
+  return {
     shares,
     isLoading,
+    isCreating,
     error,
-    visibleFields,
-    setFieldVisible,
-    setAllFieldsVisible,
     createShare,
     revokeShare,
     copyLink,
-    isCreating,
+    refresh: fetchShares,
   };
-
-  return (
-    <ShareManagerContext value={value}>
-      {typeof children === "function" ? children(value) : children}
-    </ShareManagerContext>
-  );
 }

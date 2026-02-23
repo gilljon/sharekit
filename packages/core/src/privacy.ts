@@ -13,6 +13,7 @@ export interface FlatField {
   label: string;
   defaultVisible: boolean;
   requires?: string;
+  description?: string;
   group?: string;
 }
 
@@ -32,6 +33,7 @@ export function flattenSchema(schema: FieldSchema): FlatField[] {
           label: child.label,
           defaultVisible: child.default,
           requires: child.requires,
+          description: child.description,
           group: key,
         });
       }
@@ -41,6 +43,7 @@ export function flattenSchema(schema: FieldSchema): FlatField[] {
         label: field.label,
         defaultVisible: field.default,
         requires: field.requires,
+        description: field.description,
       });
     }
   }
@@ -169,6 +172,7 @@ export interface ToggleItem {
   label: string;
   defaultVisible: boolean;
   requires?: string;
+  description?: string;
   type: "field" | "group";
   children?: ToggleItem[];
 }
@@ -183,6 +187,7 @@ export function getToggleConfig(schema: FieldSchema): ToggleItem[] {
         label: child.label,
         defaultVisible: child.default,
         requires: child.requires,
+        description: child.description,
         type: "field" as const,
       }));
       items.push({
@@ -198,6 +203,7 @@ export function getToggleConfig(schema: FieldSchema): ToggleItem[] {
         label: field.label,
         defaultVisible: field.default,
         requires: field.requires,
+        description: field.description,
         type: "field",
       });
     }

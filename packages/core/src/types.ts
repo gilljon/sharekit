@@ -8,6 +8,8 @@ export interface FieldDefinition {
   default: boolean;
   /** Dot-path to another field that must be visible for this field to be available */
   requires?: string;
+  /** Human-readable description shown in share modal tooltips or help text */
+  description?: string;
 }
 
 export interface FieldGroupDefinition {
